@@ -1,0 +1,293 @@
+collections模块
+
+  Collections 模块介绍： 
+  tuple的功能；
+  namedtuple详解
+  defaultdict 功能
+  deque 功能
+  Counter 功能
+  orderedDict 功能
+  ChainMap功能
+
+---------------------------------------------------------------
+第一章 Collections 模块介绍：
+
+collections 包含：deque, namedtuple, defaultdict ,Counter ,orderedDict ,ChainMap, UserDict, UserList,UserString
+
+应用的较多的是：deque, namedtuple, defaultdict ,Counter ,orderedDict ,ChainMap,
+
+其中namedtuple ,和 defaultdict 最常用。
+
+-------------------------------------------------------------
+
+第二章：tuple的功能
+------------------------------------------------------------------
+
+1. tuple 是不可变的，但是是可迭代的 iterable
+
+2. 拆包：
+
+user_tuple = ("xing",25,170)
+name,age,height = user_tuple
+print(name,age,height)
+>> xing, 25, 170
+
+name, *other = user_tuple
+print(name, other)
+>>xing [25,170]
+
+
+3.tuple 不可变的特性，不是绝对的
+
+name_tuple = ("xing",[25,170])
+name_tuple[1].append("chongqing")
+print(name_tuple)
+>>("xing",[25,170,"chongqing"])
+
+这种可变的数据，最好不要这样放在元组里面。
+
+4.tuple 比List 好的地方
+
+ immutable(不可变）的重要性：1、 性能优化（指出元素全部为immutable的tuple会作为常量在编译时确定，因此产生了如此显著的速度差异）.
+                             2、线程安全
+			    3、可以作为dict的key
+			    4、 拆包特性
+user_tuple = ("xing",25,170)
+user_dict = {}
+user_dict[user_tuple] = "xing"
+print(user_dict)
+>>{("xing",25,170):"xing"}
+
+-----------------------------------------------------------------
+
+       第三章 namedtuple
+--------------------------------------------------------------------
+
+可生产一个类对象 ，可以想使用类对象那样，操作元组。
+
+比直接产生一个类的好处：
+ 减少代码量
+ 减少变量存储空间。
+
+
+from collections import namedtuple
+
+"""
+函数 def ask(*args, **kwargs):
+*args : 表示 按照顺序依次传入相应的参数 ，原型就是 tuple
+**kwargs: 表示 按照 key = value 的方式，传入相应的参数。原型就是 dict
+"""
+User = namedtuple("User", ["name", "age", "height", "edu"])
+# 方式1
+# user = User("xing", 25, 170, "master")
+
+# 方式2
+# user_tuple = ("xing", 25, 170)
+# user = User(*user_tuple, "middle")
+
+# 方式3
+# user_dic = {
+#     "name": "xing",
+#     "age": 25,
+#     "height": 170
+# }
+# user = User(**user_dic, edu="master")
+
+# 方式4  使用_make()方法，就不用加*号了， 但是方法里面必须是iterable 对象
+# 麻烦就是 _make 匹配的值数量必须是一致的
+# 灵活性就不高
+
+# user_tuple = ("xing", 25, 170, "master")
+# user = User._make(user_tuple)
+
+# 方式5  _asdict()， 转为 dict方法
+user_tuple = ("xing", 25, 170)
+user = User(*user_tuple, "middle")
+user_info_dict = user._asdict()
+print(user_info_dict)
+
+# 方式6 拆包
+name, age, *others = user
+
+print(user.name, user.age, user.height, user.edu)
+
+------------------------------------------------------------
+
+  第4章 defaultdict
+---------------------------------------------------------------
+
+defaultdict 是dict 扩展的子类，具有dict的所有功能
+1、
+ setdefault(key,default_value)
+ 存在就返回key对应的值，不存在就返回 默认设置的default_value
+2、
+default_dict = defaultdict(int)
+defaultdict（）中，只能传入可调用对象，list（为[]）/int(为0)，或者函数名
+
+这样就可以：
+dic中嵌套dict结构，
+就可以在dict中嵌套复杂的默认参数了
+传入可调用对象，函数（即为函数名，不要加参数，否则就是调用了
+
+
+例：
+from collections import defaultdict
+
+# 统计users中相同元素的数量
+
+# users = ["xing", "xing1", "xing2", "xing1", "xing2", "xing2", "xing"]
+# user_dict = {}
+# for user in users:
+#     if user not in user_dict:
+#         user_dict[user] = 1
+#     else:
+#         user_dict[user] += 1
+#
+# print(user_dict)
+
+"""需求一
+  不用判断，如果存在就返回key对应的值，不存在就返回 默认设置的
+  这里的性能比上面要高，因为少做了 dict 中的查询
+  setdefault(user, 0)
+"""
+# users = ["xing", "xing1", "xing2", "xing1", "xing2", "xing2", "xing"]
+# user_dict = {}
+# for user in users:
+#     user_dict.setdefault(user, 0)  # 如果存在，就返回Key的value, 如果不存在就设置为默认的0
+#     user_dict[user] += 1
+#
+# print(user_dict)
+
+
+"""需求二
+     如果不存在就传入可调用对象
+     defaultdict(int)
+     defaultdict（）中，只能传入可调用对象。
+"""
+
+# # default_dict = defaultdict(list)
+# default_dict = defaultdict(int)
+# default_dict["xing"]  # 不存在就传入默认的 可调用对象 list（为[]）/int(为0)等
+# pass
+
+# 例子：
+
+# users = ["xing", "xing1", "xing2", "xing1", "xing2", "xing2", "xing"]
+# default_dict = defaultdict(int)
+# for user in users:
+#     default_dict[user] += 1   # 如果存在，就返回Key的value, 如果不存在就传入可调用对象
+# print(default_dict)
+
+
+"""需求三
+dic中嵌套dict结构，
+就可以在dict中嵌套复杂的默认参数了
+传入可调用对象，函数（即为函数名，不要加参数，否则就是调用了
+"""
+
+
+def gen_default():
+    return {
+        "name": "",
+        "nums": 0
+    }
+
+
+default_dict = defaultdict(gen_default)
+default_dict["group"]
+pass
+
+
+
+----------------------------------------------------------------
+
+  第五章 deque
+----------------------------------------------------------------
+
+deque 双端队列：
+  deque 是GIL保护的 线程安全的， 而list 不是线程安全的。
+  queue的put方法内部也是使用deque的append（）方法，故而是安全的。
+
+deque里面的必须是可迭代的
+
+from collections import deque
+
+user_deque = deque(["xing1", "xing2", "xing3"])  # deque里面的必须是可迭代的。
+# user_deque2 = deque(("xing1", "xing2", "xing3"))
+# user_deque3 = deque({"xing1": 11, "xing2": 12, "xing3": 13})
+
+user_deque.append("xing4")  # 添加元素
+user_deque.appendleft("xing4")  # 在左边添加元素
+user_deque2 = deque(("xing1", "xing2", "xing3"))
+user_deque.extend(user_deque2)  # 添加序列，但是返回的是空，是在user_deque上面直接操作的
+user_deque4 = user_deque.copy()  # 这是一个浅拷贝，当deque的里面有一个可变的时候，改变其中一个就会都改变
+print(user_deque.count("xing1"))  # 计数
+user_deque.clear()  # 清空
+user_deque.remove("xing1")  # 删除
+user_deque.insert(0, "xing5") # 插入元素
+user_deque.pop()  # 弹出最右边数据
+user_deque.popleft()  # 弹出最左边数据
+user_deque.reverse()  # 反转
+print(user_deque, user_deque4)
+
+
+----------------------------------------------------------------
+  第六章 Counter
+----------------------------------------------------------------
+counter 是dict的子类。
+Counter(）传递的也是 一个可迭代对象。
+
+
+from collections import Counter
+
+# Counter（）里面传递的是 可迭代对象。 继承于 dict
+users = ["xing", "xing1", "xing2", "xing1", "xing2", "xing2", "xing"]
+user_counter = Counter(users)  # 自动统计数量，并排序
+user_counter2 = Counter("abcdcba")
+user_counter3 = Counter("abcsd")
+user_counter2.update(user_counter3)  # 将两个综合后 统计数量
+
+# 最常用的 top n 问题
+# 就是取出最大几个的数据（或者说排在前面的数据）
+print(user_counter2.most_common(2))  # 取出前2名的数据
+print(user_counter2)
+
+
+
+-------------------------------------------------------------------
+第七章 OrderedDict
+----------------------------------------------------------------
+OrderedDict 是dict的子类，具有dict的所有的功能。
+# OrderedDict 具有排序的功能，就是按照进去的先后顺序排序
+
+from collections import OrderedDict
+
+user_dict = OrderedDict()
+user_dict["a"]="xing1"
+user_dict["f"]="xing2"
+user_dict["c"]="xing3"
+user_dict["b"]="xing4"
+
+print(user_dict.popitem())  # 将key和value都拿出来
+print(user_dict.pop("a"))   # 将key="a" 对应的键值对都拿出来
+user_dict.move_to_end("f")  # 将 f对应的键值对 移动到最后面
+print(user_dict)
+
+
+
+------------------------------------------------------------------
+第八章  ChainMap
+------------------------------------------------------------------
+  chainMap 就是将多个dict连接起来，访问多个dict就像访问一个dict 一样方便。
+并不是变成一个新的dict,而是在两个dict中加入了一个访问迭代器，指向了这两个dict
+
+from collections import ChainMap
+
+user_dict1 = {"a": "xing1", "b": "xing2"}
+user_dict2 = {"aa": "xing3", "bb": "xing4"}
+new_dict = ChainMap(user_dict1, user_dict2) # 并不是变成一个新的dict,而是在两个dict中加入了一个访问迭代器，指向了这两个dict
+new_dict.new_child({"cc": "xing5"})  # 添加元素
+print(new_dict.maps)   # 转成元素为dict的list类型 [{'a': 'xing1', 'b': 'xing2'}, {'aa': 'xing3', 'bb': 'xing4'}]
+new_dict.maps[0]["a"] = "xingxing"
+for key, value in new_dict.items():
+    print(key, value)

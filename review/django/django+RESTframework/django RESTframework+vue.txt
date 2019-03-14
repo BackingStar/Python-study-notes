@@ -1,0 +1,1924 @@
+django1.11 RESTframework + python 3.7
+
+
+使用豆瓣源安装比较快
+pip install -i https://pypi.douban.com/simple pygame
+
+构建model的时候，将外键指向自己。使用self
+parent_category = models.ForeignKey("self", null=True, blank=True, 			verbose_name="父类目级别", help_text="父类目级			别",related_name="sub_cat")
+
+
+部署项目到云服务器：
+1、 购买服务器，选择CentOS系统， 部署服务器
+2、下载SecureCRT 连接远程服务器（远程连接工具）
+3、防止服务器不用的时候客户端会退出来：安装 tmux （屏幕管理工具，强大）
+   yum install tmux
+
+4、tumx # 就可以进去
+  -------------------
+4.1 
+    pwd(查看当前目录）
+    mkdir projiets(新建目录）
+    ls 进入目录,查看目录列表
+    mkdir MxShop
+5、在pycharm中添加服务器 SFTP连接上传项目代码，并同步
+
+6、传完之后，可以看一下
+   ls
+   cd MxShop/
+   ls
+   pwd
+7、 Centos部署nginx+uwsgi
+8、在navicat中，连接云服务器新建数据库，将本地的数据传到服务器上
+（传不上的时候，在工具里面-服务器监控-变量-将max-packet改大一点就行了）
+
+9、建立虚拟环境
+
+ ...
+ 查找文件位置： sudo find / -name ...
+
+
+安装 文件
+  pip install -r requirements.txt
+
+
+10、 pycharm settings配置
+   数据库那里：
+   HOST：‘线上服务器ip’
+  
+ALLOWED_HOSTS=['*']
+
+
+11、 调试服务器的代码
+
+   将解释器改为 服务器的 解释器
+   interpriter-add- SSH Interpriter
+   debug-mxshop-editing- 服务器ip
+ 
+部署的时候可以使用 WinSCP(有点像FTP，用于建立站点)，将本地的文件传到服务器上
+
+--------------------------------***********--------------------------
+
+		restful 和前端源码介绍
+
+前后端分离的优缺点：
+
+
+为什么要进行前后端分离；
+
+1： pc, app, pad 多端适应
+2 ：SPA 开发模式开始流行（单个页面）
+3： 前后端开发职责不清
+4、开发效率问题，前后端互相等待
+5、前端一直配合后端，能力受限
+6、后端开发语言和模板高度耦合，导致开发语言依赖严重
+
+前后端分离缺点：
+
+1、前后端学习门槛增加
+2、数据依赖导致文档重要性增加
+3、前端工作量加大
+4、SEO的难度加大（搜索引擎优化排名）（意思就是baidu\google等的爬虫爬不到了，就会影响排名）
+5、 后端开发模式迁移增加成本
+
+-----------------------------------------------------------
+               restful api
+************************************************
+
+restful api  （资源状态转换）（传递的是数据，不再是html,使用http的操作方法，面向资源，进行数据的交互）
+ 
+ 是目前前后端分离的最佳实践，其实是一个规范、标准
+
+好处：
+
+ 1、轻量的,直接通过http,（无状态协议，分离性特别好）不需要额外的协议， post/get/put/delete/patch方法（head/ options）
+
+GET:取出资源
+POST:在服务器新建资源
+PUT:在服务器更新资源（全体资源）
+PATCH: 部分更新（部分资源）
+DELETE:删除资源
+ 
+ 2、 面向资源、一目了然、具有解释性
+
+ 3、描述简单，一般通过json或者xml做数据通信
+
+
+restful api 的实际操作：
+
+
+        GET：读取（Read）
+        POST：新建（Create）
+        PUT：更新（Update）
+        PATCH：更新（Update），通常是部分更新
+        DELETE：删除（Delete）
+
+RESTful 的核心思想就是，客户端发出的数据操作指令都是"动词 + 宾语"的结构
+
+状态码：
+
+客户端的每一次请求，服务器都必须给出回应。回应包括 HTTP 状态码和数据两部分
+
+避免多级 URL， 更好的做法是，除了第一级，其他级别都用查询字符串表达
+比如：GET /articles?published=true
+
+200状态码表示操作成功
+201 CREATED - [POST/PUT/PATCH]：用户新建或修改数据成功。
+202 Accepted状态码表示服务器已经收到请求，但还未进行处理，会在未来再处理，通常用于异步操作
+400 Bad Request：服务器不理解客户端的请求，未做任何处理
+401 Unauthorized：用户未提供身份验证凭据，或者没有通过身份验证
+403 Forbidden：用户通过了身份验证，但是不具有访问资源所需的权限
+404 Not Found：所请求的资源不存在，或不可用
+409  某个页面api访问过快
+500 Internal Server Error：客户端请求有效，服务器处理时发生了意外
+
+
+-------------------------------------------------------
+
+		vue 的基本概念
+
+前端工程化：
+数据双向绑定：mvvm框架
+组件化开发
+
+
+webpack:将文件转化为 js，使浏览器可以看懂
+vue,vuex,vue-router,
+vuex:组件间的通信
+vue-router：组件的跳转，将跳转的路径关联到组件中
+axios：ajax请求
+
+ES6：一种语法
+babel：将es6的语法转为ES5
+
+
+----------------------------------------------------------
+
+  django  serialize实现序列化
+
+view_base.py
+	goods = Goods.objects.all()[:10]
+        # 法1 ： 一个一个的填充
+        # for good in goods:
+        #     json_dict = {}
+        #     json_dict["name"] = good.name
+        #     json_dict["category"] = good.category.name
+        #     json_dict["market_price"] = good.market_price
+        #     json_list.append(json_dict)
+        # 法2：django 自带的实现序列化，问题是 Image和 add_time等，不能序列化，要报错
+        # from django.forms.models import model_to_dict
+        # for good in goods:
+        #     json_dict = model_to_dict(good)
+        #     json_list.append(json_dict)
+        # from django.http import HttpResponse
+        # import json
+        # return HttpResponse(json.dumps(json_list), content_type="application/json")
+
+        # 法3 ：
+        # from django.core import serializers
+        # from django.http import JsonResponse
+        # import json
+        # json_data = serializers.serialize('json', goods)
+        # json_data = json.loads(json_data)
+        # return JsonResponse(json_data, safe=False)
+        # 或者
+        # 法4：
+        from django.http import HttpResponse
+        from django.core import serializers
+        json_data = serializers.serialize('json', goods)
+        return HttpResponse(json_data, content_type="application/json")
+
+------------------------------------------------
+
+      Django REST framework 实现序列化 serializer
+
+view.py
+from rest_framework import serializers
+class GoodsSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=300, required=True)
+    click_num = serializers.IntegerField(default=0)
+    goods_front_image = serializers.ImageField()
+
+     def create(self, validated_data):
+         """实现post提交"""
+         return Goods.objects.create(**validated_data)
+
+
+serializers.py
+from .serializers import GoodsSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class GoodsListView(APIView):
+    """
+    List all goods
+    """
+    def get(self, request, format=None):
+        goods = Goods.objects.all()
+        serializer = GoodsSerializer(goods, many=True)
+        return Response(serializer.data)
+    def post(self, request, format=None):
+        """实现post提交"""
+        serializer = GoodsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+serializer序列化 嵌套：
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoodsCategory
+        # 取出全部字段序列化
+        fields = "__all__"
+
+
+class GoodsSerializer(serializers.ModelSerializer):
+ 
+    # 使用如django的ModelForm一样，进行ModelSerializer序列化， 更加简洁
+    category = CategorySerializer()
+    class Meta:
+        model = Goods
+        # fields = ('name', 'click_num', 'market_price', 'add_time')
+        # 取出全部字段序列化
+        fields = "__all__"
+
+
+----------------------------------------------------------
+
+分页：
+在settings里 配置:
+REST_FRAMEWORK = {
+     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10
+}
+
+或者自定义在view中：
+
+# 分页
+from rest_framework.pagination import PageNumberPagination
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10  # 每页10条
+    page_size_query_param = 'page_size' # 前端可以自定义多少页
+    page_query_param = 'p' # 名字p 以前是page
+    max_page_size = 100  # 最大100页
+
+class GoodsListView(generics.ListAPIView):
+   # 要记住一定要设置到 View中去。
+    pagination_class = StandardResultsSetPagination
+
+-----------------------------------------------------------------
+
+url配置 Rooters 和 ViewSets 配套使用
+
+view.py
+class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+    pagination_class = StandardResultsSetPagination
+
+
+url.py
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+# 配置goods的url
+router.register(r'goods', GoodsListViewSet)
+
+url(r'^', include(router.urls)),
+
+
+
+------------------------------------------------------------------
+drf:
+View和mixin的继承关系：
+
+                View                -django
+               Apiview                -drf
+              GenericAPIView         -drf
+            GenericViewSet(Viewset)   -drf
+
+
+mixin:
+    CreateModelMixin
+    ListModelMixin
+    UpdateModelMixin
+    RetrieveModelMixin
+    DestryModelMixin
+
+
+----------------------------------------------------------------------
+drf:
+request
+   .data  :将解析到的数据放在里面
+   .query_params : 放 get请求的参数
+   .parsers:   解析传过来的各种类型、数据（Json, Form, MultiPartParser, fielUploadParser）
+
+response
+  返回json,html等各种类型数据
+
+----------------------------------------------------------------------
+drf 过滤器：
+
+1...
+from django_filters import rest_framework as filters
+
+class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ('name', 'shop_price')
+
+就可以指定过滤：name 和 shop_price了
+ 但是优缺点： 就是只能根据字段过滤，不能根据区间过滤，比如：30-100之间的，应该怎么办呢？
+
+2...
+那就自定义一个filter
+
+filters.py
+from django_filters import rest_framework as filters
+
+from .models import Goods
+
+
+class GoodsFilter(filters.FilterSet):
+    """
+    商品的过滤器
+    """
+    min_price = filters.NumberFilter(field_name="shop_price", lookup_expr='gte')
+    max_price = filters.NumberFilter(field_name="shop_price", lookup_expr='lte')
+
+    class Meta:
+        model = Goods
+        fields = ['min_price', 'max_price']
+
+view.py
+class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+
+    # 使用自定义的过滤器filters.py，就像form模式一样，
+    filter_class = GoodsFilter
+
+
+-------------------------------------------
+drf 搜索：
+
+view.py
+from rest_framework import filters
+
+class...
+        filter_backends = (filters.SearchFilter,)
+        search_fields = ('name', 'goods_brief','goods_desc')
+
+还可以对字段进行正则表达式定义进行搜索：
+
+'^' Starts-with search. 以该字段开头
+'=' Exact matches.  精准匹配
+'@' Full-text search. (Currently only supported Django's MySQL backend.)  全文搜索
+'$' Regex search. 正则表达式定义搜索
+For example:
+
+search_fields = ('=name', '^email')
+
+--------------------------------------------------------------
+drf 排序：
+
+view.py
+from rest_framework import filters
+class...
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('sold_num', 'add_time')
+
+
+
+*******************************************************
+总结：
+
+ViewSet和 Routers 配合使用 , 基本能完成大部分的功能
+
+urls.py
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+# 配置goods的url
+router.register(r'goods', GoodsListViewSet)
+
+urlpatterns = [
+    url(r'^', include(router.urls)),
+
+]
+
+
+
+view.py
+
+from rest_framework import mixins
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import viewsets
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+
+
+from .models import Goods
+from .filters import GoodsFilter
+from .serializers import GoodsSerializer
+
+# 分页
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    page_query_param = 'p'
+    max_page_size = 100
+
+class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    商品列表页，
+    序列化；分页；搜索；排序 ；过滤
+    """
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter,filters.OrderingFilter)
+    # 搜索
+    search_fields = ('name', 'goods_brief','goods_desc')
+    # 排序
+    ordering_fields = ('sold_num', 'add_time')
+
+    # 3.. 使用自定义的过滤器filters.py，就像form模式一样，
+    filter_class = GoodsFilter
+
+
+filters.py
+from django_filters import rest_framework as filters
+
+from .models import Goods
+
+
+class GoodsFilter(filters.FilterSet):
+    """
+    商品的过滤器
+    """
+    min_price = filters.NumberFilter(field_name="shop_price", lookup_expr='gte')
+    max_price = filters.NumberFilter(field_name="shop_price", lookup_expr='lte')
+
+    class Meta:
+        model = Goods
+        fields = ['min_price', 'max_price']
+
+serializers.py
+
+from rest_framework import serializers
+from.models import Goods, GoodsCategory
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoodsCategory
+        # 取出全部字段序列化
+        fields = "__all__"
+
+class GoodsSerializer(serializers.ModelSerializer):
+
+    # 使用如django的ModelForm一样，进行ModelSerializer序列化， 更加简洁
+    category = CategorySerializer()
+
+    class Meta:
+        model = Goods
+        # fields = ('name', 'click_num', 'market_price', 'add_time')
+        # 取出全部字段序列化
+        fields = "__all__"
+
+
+
+---------------------------------------------------------------------
+序列化的嵌套
+sub_cat = CategorySerializer2(many=True)
+要注意many=True，才能将所有的显示出来
+指定ID搜索，只需要继承mixins.RetrieveModelMixin 即可
+
+
+解决跨域的问题：
+
+ 安装 django-cors-headers  （见 github）
+就可以在Vue的  let local_host = ‘http://127.0.0.1:8000 '
+访问 http://localhost:8080/
+
+cnpm install
+cnpm run dev
+
+-------------------------------------------------------------------
+
+展示列表页数据：
+指定搜素功能， 通过搜索列表页的ID，得到数据
+并通过顶部的导航栏，实现列表的展示。
+ top_category = django_filters.NumberFilter(method="top_category_filter")
+
+    def top_category_filter(self, queryset, name, value):
+        return queryset.filter(Q(category_id=value) | Q(category__parent_category_id=value)
+                               | Q(category__parent_category__parent_category_id=value))
+
+ 
+
+------------------------------------------------------------
+
+drf 实现 token登录和原理：
+
+http://projectsedu.com/2016/10/17/django%E4%BB%8E%E8%AF%B7%E6%B1%82%E5%88%B0%E8%BF%94%E5%9B%9E%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88/
+
+
+缺点就是： token登录的 sessionID是可以永久使用的，唯一的，一旦被别人拿走，就会出现不可预料的后果
+-------------------------------------------------------------------
+		django	 http和response    
+-----------------------------------------------------------------
+Django 从请求到返回都经历了什么？
+
+看一下manager.py的源码， ruserserver主要完成两件事：
+1). 解析参数，并通过django.core.servers.basehttp.get_internal_wsgi_application方法获取wsgi handler;
+2). 根据ip_address和port生成一个WSGIServer对象，接受用户请求
+在创建WSGIServer实例的时候会指定HTTP请求的Handler
+
+Django会先根据settings中的WSGI_APPLICATION来获取handler；
+
+在创建project的时候，Django会默认创建一个wsgi.py文件，而settings中的WSGI_APPLICATION配置也会默认指向这个文件。看一下这个wsgi.py文件，其实它也和上面的逻辑一样，最终调用get_wsgi_application实现。
+
+
+django http请求处理流程：
+
+Django和其他Web框架一样，HTTP的处理流程基本类似：接受request，返回response内容。
+
+Django的具体处理流程大致如下：
+1. 加载settings.py， 加载配置和路径
+2. 创建WSGIServer
+     获取wsgi handler;(Django会先根据settings中的WSGI_APPLICATION来获取handler；)
+     根据ip_address和port生成一个WSGIServer对象，接受用户请求
+     在创建WSGIServer实例的时候会指定HTTP请求的Handler
+
+3. 处理Request
+   最终是调用 wsgiref.handlers.BaseHandler中的run方法处理
+
+4. 返回Response
+根据url规则找到对应的view方法(类)，view逻辑会根据request实例生成并返回具体的response。
+
+
+Django处理request的流程：
+
+1. 用户通过浏览器请求一个页面
+2.请求到达Request Middlewares，中间件对request做一些预处理或者直接response请求
+3.URLConf通过urls.py文件和请求的URL找到相应的View
+4.View Middlewares被访问，它同样可以对request做一些处理或者直接返回response
+5.调用View中的函数
+6.View中的方法可以选择性的通过Models访问底层的数据
+7.所有的Model-to-DB的交互都是通过manager完成的
+8.如果需要，Views可以使用一个特殊的Context
+9.Context被传给Template用来生成页面
+    a.Template使用Filters和Tags去渲染输出
+    b.输出被返回到View
+    c.HTTPResponse被发送到Response Middlewares
+    d.任何Response Middlewares都可以丰富response或者返回一个完全不同的response
+    e.Response返回到浏览器，呈现给用户
+
+
+上述流程中最主要的几个部分分别是:Middleware(中间件，包括request, view, exception, response)，URLConf(url映射关系)，Template(模板系统)
+
+1. Middleware(中间件)
+Middleware并不是Django所独有的东西，在其他的Web框架中也有这种概念。在Django中，Middleware可以渗入处理流程的四个阶段：request，view，response和exception，相应的，在每个Middleware类中都有process_request，process_view， process_response 和 process_exception这四个方法。你可以定义其中任意一个活多个方法，这取决于你希望该Middleware作用于哪个处理阶段。每个方法都可以直接返回response对象。
+
+Middleware是在Django BaseHandler的load_middleware方法执行时加载的，加载之后会建立四个列表作为处理器的实例变量：
+
+_request_middleware：process_request方法的列表
+
+_view_middleware：process_view方法的列表
+
+_response_middleware：process_response方法的列表
+
+_exception_middleware：process_exception方法的列表
+
+
+Django项目的安装并不强制要求任何中间件，如果你愿意，MIDDLEWARE_CLASSES可以为空。中间件出现的顺序非常重要：在request和view的处理阶段，Django按照MIDDLEWARE_CLASSES中出现的顺序来应用中间件，而在response和exception异常处理阶段，Django则按逆序来调用它们。也就是说，Django将MIDDLEWARE_CLASSES视为view函数外层的顺序包装子：在request阶段按顺序从上到下穿过，而在response则反过来。
+
+2 、URLConf(URL映射)
+
+如果处理request的中间件都没有直接返回response，那么Django会去解析用户请求的URL。URLconf就是Django所支撑网站的目录。它的本质是URL模式以及要为该URL模式调用的视图函数之间的映射表。通过这种方式可以告诉Django，对于这个URL调用这段代码，对于那个URL调用那段代码。具体的，在Django项目的配置文件中有ROOT_URLCONF常量，这个常量加上根目录"/"，作为参数来创建django.core.urlresolvers.RegexURLResolver的实例，然后通过它的resolve方法解析用户请求的URL，找到第一个匹配的view。
+
+3、Template(模板)
+大部分web框架都有自己的Template(模板)系统，Django也是。但是，Django模板不同于Mako模板和jinja2模板，在Django模板不能直接写Python代码，只能通过额外的定义filter和template tag实现。
+
+
+-------------------------------------------------------------------
+
+ JWT 认证和登录：
+
+ json Web Token : 实现用户的登录
+
+原理：参考 前后端分离之JWT用户认证
+
+   jwt就是 将用户的信息，通过一系列算法进行加密（base64+密钥+签名算法），编码，返回给用户，存在客户端中，当用户请求的时候，就带着这一串信息，然后服务器进行解码，判断是否被篡改，然后实现登录或者认证，就不用每次都请求服务器的数据库读取数据。
+尤其适合单点登录，即同一个用户在一个域名的子域名之间互相转换，每次请求都只带着这串JWT，就可以实现多个域名进行 同步 了。不用想session那样，每次都访问一次服务器的数据库。减轻了服务器的压力。
+
+   使用JWT，减小了服务器的存储压力和数据库的频繁读取开销，只是增加了服务器的计算，加密，编码解码，相对而言，不算什么
+
+-------------------------------------------------------------------
+
+jwt在settings中的设置：(额外的功能设置）
+
+Additional Settings
+
+JWT_AUTH = {
+设置过期时间
+ 'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
+#  'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+设置用户header_prefix 为jwt或者Token
+ 'JWT_AUTH_HEADER_PREFIX': 'JWT'
+}
+
+
+
+---------------------------------------------------
+
+自定义用户验证，即可以使用手机，也可以使用username
+
+settings.py
+
+# 自定义用户验证
+AUTHENTICATION_BACKENDS = {
+    "users.views.CustomBackend",
+}
+
+users/views.py
+from django.db.models import Q
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+
+class CustomBackend(ModelBackend):
+    """自定义用户验证"""
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:
+            user = User.objects.get(Q(username=username) | Q(mobile=username))
+            if user.check_password(password):
+                return user
+        except Exception as e:
+            return None
+
+
+------------------------------------------------
+
+
+-------------------------------------------------
+
+云片网 实现手机验证码功能。
+
+需要注册，并添加签名和模板， 需要审核通过才能用。
+
+注意： 是使用云片网完成线上部署的时候，需要将自己的ip地址加入到白名单中去，否则会发送失败。
+
+yunpian.py
+
+import requests
+import json
+
+
+class YunPian(object):
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.single_send_url = "https://sms.yunpian.com/v2/sms/single_send.json"
+
+    def send_sms(self, code, mobile):
+        parmas = {
+            "apikey": self.api_key,
+            "mobile": mobile,
+            "text": "（自己定义的模板）【云片网】您的验证码是{}".format(code)
+        }
+
+        response = requests.post(self.single_send_url, data= parmas)
+        re_dict = json.loads(response.text)
+        print(re_dict)
+
+
+if __name__ == "__main__":
+    yunpian = YunPian("d5dfgd879cga5a5f")  # 云片王生成的apikey
+    yunpian.send_sms("1234", "18111111111")
+
+
+手机短信验证
+view.py
+
+class SmsCodeViewSet(CreateModelMixin, viewsets.GenericViewSet):
+    """
+    发送短信验证码
+    """
+    serializer_class = SmsSerializer
+
+    def generate_code(self):
+        # 生成4位数字的验证码
+        seeds = "1234567890"
+        random_str = []
+        for i in range(4):
+            random_str.append(choice(seeds))
+        return "".join(random_str)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        mobile = serializer.validated_data["mobile"]
+        yun_pian = YunPian(api_key="dfdf5fd5d5f") # api_key是云片网上的自己的
+
+        code = self.generate_code()
+        sms_status = yun_pian.send_sms(code=code, mobile=mobile)
+        if sms_status["code"] != 0:
+            return Response({
+                "mobile": sms_status["msg"]
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            code_record = VerifyCode(code=code, mobile=mobile)
+            code_record.save()
+            return Response({
+                "mobile": mobile
+            }, status=status.HTTP_201_CREATED)
+
+
+-------------------------------------
+
+ user serializer和validator验证
+
+serializers.py
+class UserRegSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(required=True, max_length=4,min_length=4, error_messages={
+        "blank": "请输入验证码",
+        "required": "请输入验证码",
+        "max_length": "验证码格式错误",
+        "min_length": "验证码格式错误"
+    }, help_text="验证码")
+    username = serializers.CharField(required=True, allow_blank=False,
+                                     validators=[UniqueValidator(queryset=User.objects.all())])
+
+    def validated_code(self, code):
+        # try:
+        #     verify_code = VerifyCode.objects.get(mobile=self.initial_data["username"], code=code)
+        # except VerifyCode.DoesNotExist as e:
+        #     pass
+        # except VerifyCode.MultipleObjectsReturned as e:
+        #     pass
+        verify_code = VerifyCode.objects.filter(mobile=self.initial_data["username"]).order_by["-add_time"]
+        if verify_code:
+            last_records = verify_code[0]
+            five_mintes_ago = datetime.now() - timedelta(hours=0, minutes=5, seconds=0)
+            if five_mintes_ago < last_records.add_time:
+                raise serializers.ValidationError("验证码过期")
+            if last_records != code:
+                raise serializers.ValidationError("验证码错误")
+        else:
+            raise serializers.ValidationError("验证码错误")
+
+    def validate(self, attrs):
+        # 全局处理
+        attrs["mobile"] = attrs["username"]
+        del attrs["code"]
+        return attrs
+
+    class Meta:
+        model = User
+        fields = ("username", "code", "mobile")
+
+
+
+------------------------------------------------------------------
+serializers-fields  和密码加密保存
+
+    # write_only 就只会序列化，并不会返回 回来
+    # style={'input_type': 'password'} 这个是 让密码输入的时候为不可见方式，而不是明文
+ # label="用户名"   命名
+
+
+  password = serializers.CharField(
+        style={'input_type': 'password'}, write_only=True, label="密码"
+    )
+
+
+    # 在序列化save的时候，会调用该函数， 这里重写是为了让保存的密码为加密形式
+    def create(self, validated_data):
+        user = super(UserRegSerializer, self).create(validated_data=validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
+
+
+---------------------------------------------------------------
+django信号量实现用户密码修改
+
+users/signals.py
+"""使用django信号量完成密码修改"""
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+@receiver(post_save, sender=User)
+def create_user(sender, instance=None, created=False, **kwargs):
+    if created:
+        password = instance.password
+        instance.set_password(password)
+        instance.save()
+
+
+users/apps.py
+class UsersConfig(AppConfig):
+    name = 'users'
+    verbose_name = "用户管理"
+
+    def ready(self):
+        import users.signals
+
+
+----------------------------------------------------------------------
+view.py
+   
+ # 自己写一个token，以便注册之后直接跳转到登录界面。
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+
+        re_dict = serializer.data
+        payload = jwt_payload_handler(user)
+        re_dict["token"] = jwt_encode_handler(payload)
+        re_dict["name"] = user.name if user.name else user.username
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+
+
+-------------------------------------------------------------
+
+商品详情页
+
+在GoodsListViewSet 中添加mixins.RetrieveModelMixin
+在 goods/serializers中添加：
+class GoodsImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoodsImage
+        fields = ("image",)
+
+在GoodsSerializer中添加
+images = GoodsImageSerializer(many=True)
+
+
+
+---------------------------------------------
+
+用户收藏功能
+view.py
+class UserFavViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    """
+    用户收藏功能
+    """
+    queryset = UserFav.objects.all()
+
+
+    serializer_class = UserFavSerializer
+
+
+serializers.py
+from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
+
+from .models import UserFav
+
+
+class UserFavSerializer(serializers.ModelSerializer):
+    # 默认当前用户
+    # user = serializers.HiddenField(
+    #     default=serializers.CurrentUserDefault()
+    # )
+
+    class Meta:
+        model = UserFav
+        # django 完成不能重复添加 user-goods
+        validators = [
+            UniqueTogetherValidator(
+                queryset=UserFav.objects.all(),
+                fields=('user', 'goods'),
+                message="已经收藏"
+            )
+        ]
+
+        fields = ("user", "goods", "id")
+
+model.py
+class Meta:
+        # 数据库完成不能重复添加 user-goods
+        # unique_together = ("user", "goods")
+
+
+-------------------------------------------------------------
+配置用户权限：
+ # 用户权限验证配置， 就是要有相应的权限，用户才能删除收藏
+view.py
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.authentication import SessionAuthentication
+from utils.permissions import IsOwnerOrReadOnly
+
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    serializer_class = UserFavSerializer
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+
+    # 只能获取当前用户的 收藏
+    def get_queryset(self):
+        return UserFav.objects.filter(user=self.request.user)
+
+utils/permissions.py
+from rest_framework import permissions
+
+SAFE_METHODS = ["GET", "HEAD", "OPTIONS"]
+
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return obj.user == request.user
+
+
+---------------------------------------------------------
+ drf的api文档自动生成和功能
+
+可以修改list和read、create等，得到相应的js或者shell 代码，前端直接拿过去用就可以了。
+ 更加方便快捷
+其中 list对应list
+     retrieve对应create。
+
+description 可以在 Model或者 serializer中添加 help_text 显示出来。
+
+------------------------------------------------------------
+
+9-2 动态设置serializer和permission获取用户信息
+
+user/view.py - UserViewSet
+authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+
+    # 动态的设置serializer, 获取用户信息。
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return UserDetailSerializer
+        elif self.action == "create":
+            return UserRegSerializer
+        return UserDetailSerializer
+
+    # 动态的设置permission，得到权限，获取用户的信息。
+    def get_permissions(self):
+        if self.action == "retrieve":
+            return [permissions.IsAuthenticated()]
+        elif self.action == "create":
+            return []
+        return []
+
+user/serializer.py
+class UserDetailSerializer(serializers.ModelSerializer):
+    """
+    用户详情页序列化类
+    """
+    class Meta:
+        model = User
+        fields = ("name", "birthday", "mobile", "gender", "email")
+
+
+----------------------------------------------------------------
+
+9-5 用户收藏功能
+
+user_operation/views.py
+
+# 动态的设置serializer, 获取用户信息。
+    def get_serializer_class(self):
+        if self.action == "list":
+            return UserFavDetailSerializer
+        elif self.action == "create":
+            return UserFavSerializer
+        return UserFavSerializer
+
+
+user_operation/serializers.py
+class UserFavDetailSerializer(serializers.ModelSerializer):
+    goods = GoodsSerializer()
+
+    class Meta:
+        model = UserFav
+        fields = ("goods", "id")
+
+
+
+-----------------------------------------------------------
+9-6 用户留言功能
+
+user_opreation/view.py
+class LeavingMessageViewSet(mixins.ListModelMixin,mixins.CreateModelMixin,
+                            mixins.DestroyModelMixin,viewsets.GenericViewSet):
+    """
+    留言
+    list:
+        获取用户留言
+    create:
+        添加留言
+    delete:
+        删除留言功能
+    """
+    serializer_class = LeavingMessageSerializer
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+
+    def get_queryset(self):
+        return UserLeavingMessage.objects.filter(user=self.request.user)
+
+
+user_operation/serializers.py
+class LeavingMessageSerializer(serializers.ModelSerializer):
+    # 默认当前用户
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+    # read_only=True 只返回 不提交
+    add_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M')
+
+    class Meta:
+        model = UserLeavingMessage
+        fields = ("user", "id", "message_type", "subject", "message", "file", "add_time")
+
+
+# 配置用户留言的url
+router.register(r'messages', LeavingMessageViewSet, base_name="messages")
+
+
+-----------------------------------------------------------------
+9-7 用户收货地址列表页接口开发
+
+user_operation/views.py
+class AddressViewSet(viewsets.ModelViewSet):
+    """
+    收获地址管理（增删改查）
+    list:
+        获取收货地址
+    create:
+        新增收获地址
+    update:
+        更新收获地址
+    delete:
+        删除收货地址
+    """
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        return UserAddress.objects.filter(user=self.request.user)
+
+
+user_operation/serializers.py
+class AddressSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+    add_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M')
+
+    class Meta:
+        model = UserAddress
+        fields = ("user", "id", "province", "city", "district", "address", "signer_name", "signer_mobile", "add_time")
+
+# 配置用户收货地址的url
+router.register(r'address', AddressViewSet, base_name="address")
+
+-------------------------------------------------------------------
+
+10-1 购物车功能需求分析和加入到购物车实现
+
+view.py
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.authentication import SessionAuthentication
+
+from utils.permissions import IsOwnerOrReadOnly
+from .serializers import ShopCartSerializer
+from .models import ShoppingCart
+# Create your views here.
+
+
+class ShoppingCartViewSet(viewsets.ModelViewSet):
+
+    """
+    购物车功能：
+    list:
+        获取购物车详情
+    create:
+        加入购物车
+    delete:
+        删除购物车
+    """
+    # queryset = ShoppingCart.objects.all()
+
+    # 配置权限
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+
+    serializer_class = ShopCartSerializer
+
+    def get_queryset(self):
+        return ShoppingCart.objects.filter(user=self.request.user)
+
+---------------------
+
+serializers.py
+from rest_framework import serializers
+
+from .models import ShoppingCart
+from goods.models import Goods
+
+
+class ShopCartSerializer(serializers.Serializer):
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    goods_num = serializers.IntegerField(min_value=1, required=True,
+                                          error_messages={
+                                            "min_value": "商品最小要大于一",
+                                            "require": "请选择购买数量"
+                                    })
+    goods = serializers.PrimaryKeyRelatedField(required=True, queryset=Goods.objects.all())
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        goods_num = validated_data["goods_num"]
+        goods = validated_data["goods"]
+
+        existed = ShoppingCart.objects.filter(user=user, goods=goods)
+
+        if existed:
+            existed = existed[0]
+            existed.goods_num += goods_num
+            existed.save()
+        else:
+            existed = ShoppingCart.objects.create(**validated_data)
+
+        return existed
+
+
+# 配置用户购物车的url
+router.register(r'shopcarts', ShoppingCartViewSet, base_name="shopcarts")
+
+
+----------------------------------------------------------------
+10-2 修改购物车数量
+
+serializers.py
+
+  def update(self, instance, validated_data):
+        instance.goods_num = validated_data["goods_num"]
+        instance.save()
+        return instance
+
+
+-------------------------------------------------------
+10-4 订单管理接口
+
+
+view.py
+
+class OrderViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.DestroyModelMixin,
+                   mixins.CreateModelMixin, mixins.RetrieveModelMixin):
+    """
+    订单管理
+    list:
+        获取个人订单
+    delete:
+        删除订单
+    create:
+        新增订单
+
+    """
+
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        return OrderInfo.objects.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return OrderDetailSerializer
+        else:
+            return OrderSerializer
+
+    def perform_create(self, serializer):
+        order = serializer.save()
+        shop_carts = ShoppingCart.objects.filter(user=self.request.user)
+        for shop_cart in shop_carts:
+            order_goods = OrderGoods()
+            order_goods.goods = shop_cart.goods
+            order_goods.goods_num = shop_cart.nums
+            order_goods.order = order
+            order_goods.save()
+
+            shop_cart.delete()
+
+        return order
+
+serializers.py
+
+class OrderGoodsSerializer(serializers.ModelSerializer):
+    goods = GoodsSerializer(many=False)
+
+    class Meta:
+        model = OrderGoods
+        fields = "__all__"
+
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    goods = OrderGoodsSerializer(many=True)
+
+    class Meta:
+        model = OrderInfo
+        fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+    pay_status = serializers.CharField(read_only=True)
+    trade_no = serializers.CharField(read_only=True)
+    order_sn = serializers.CharField(read_only=True)
+    pay_time = serializers.DateTimeField(read_only=True)
+
+    def generate_order_sn(self):
+        # 生产订单号
+        # 当前时间+user_id+随机数
+        from random import Random
+        random_ins = Random()
+        order_sn = "{time_str}{user_id}{ranstr}".format(time_str=time.strftime("%Y%m%d%H%M%S"),
+                                                        user_id=self.context["request"].user.id,
+                                                        ranstr=random_ins.randint(10, 99))
+        return order_sn
+
+    def validate(self, attrs):
+        attrs["order_sn"] = self.generate_order_sn()
+        return attrs
+
+    class Meta:
+        model = OrderInfo
+        fields = "__all__"
+
+
+# 配置用户订单的url
+router.register(r'orders', OrderViewSet, base_name="orders")
+
+
+
+------------------------------------------------
+支付宝
+10-13 django集成支付宝notify_url和return_url接口
+
+电脑网站支付结果异步通知 ：
+对于PC网站支付的交易，在用户支付完成之后，支付宝会根据API中商户传入的
+notify_url，通过POST请求的形式将支付结果作为参数通知到商户系统。
+
+页面回跳参数：
+对于PC网站支付的交易，在用户支付完成之后，支付宝会根据API中商户传入的return_url参数，通过GET请求的形式将部分支付结果参数通知到商户系统。
+
+url.py
+  # 支付宝接口
+    url(r'^alipay/return/', AlipayView.as_view(), name="alipay"),
+
+view.py
+from datetime import datetime
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from utils.alipay import AliPay
+from mxshop.settings import alipay_public_key_path, app_private_key_path
+
+
+class AlipayView(APIView):
+    def get(self, request):
+        """
+        处理支付宝的return_url返回
+        跳转
+        :param request:
+        :return:
+        """
+        processed_dict = {}
+
+
+
+alipay.py
+from datetime import datetime
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5
+from Crypto.Hash import SHA256
+from base64 import b64encode, b64decode
+from urllib.parse import quote_plus
+from urllib.parse import urlparse, parse_qs
+from urllib.request import urlopen
+from base64 import decodebytes, encodebytes
+
+import json
+
+class AliPay(object):
+    """
+    支付宝支付接口
+    """
+    def __init__(self, appid, app_notify_url, app_private_key_path,
+                 alipay_public_key_path, return_url, debug=False):
+        self.appid = appid
+        self.app_notify_url = app_notify_url
+        self.app_private_key_path = app_private_key_path
+        self.app_private_key = None
+        self.return_url = return_url
+        with open(self.app_private_key_path) as fp:
+            self.app_private_key = RSA.importKey(fp.read())
+
+        self.alipay_public_key_path = alipay_public_key_path
+        with open(self.alipay_public_key_path) as fp:
+            self.alipay_public_key = RSA.import_key(fp.read())
+
+
+        if debug is True:
+            self.__gateway = "https://openapi.alipaydev.com/gateway.do"
+        else:
+            self.__gateway = "https://openapi.alipay.com/gateway.do"
+
+    def direct_pay(self, subject, out_trade_no, total_amount, return_url=None, **kwargs):
+        biz_content = {
+            "subject": subject,
+            "out_trade_no": out_trade_no,
+            "total_amount": total_amount,
+            "product_code": "FAST_INSTANT_TRADE_PAY",
+            # "qr_pay_mode":4
+        }
+
+        biz_content.update(kwargs)
+        data = self.build_body("alipay.trade.page.pay", biz_content, self.return_url)
+        return self.sign_data(data)
+
+    def build_body(self, method, biz_content, return_url=None):
+        data = {
+            "app_id": self.appid,
+            "method": method,
+            "charset": "utf-8",
+            "sign_type": "RSA2",
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "version": "1.0",
+            "biz_content": biz_content
+        }
+
+        if return_url is not None:
+            data["notify_url"] = self.app_notify_url
+            data["return_url"] = self.return_url
+
+        return data
+
+    def sign_data(self, data):
+        data.pop("sign", None)
+        # 排序后的字符串
+        unsigned_items = self.ordered_data(data)
+        unsigned_string = "&".join("{0}={1}".format(k, v) for k, v in unsigned_items)
+        sign = self.sign(unsigned_string.encode("utf-8"))
+        # ordered_items = self.ordered_data(data)
+        quoted_string = "&".join("{0}={1}".format(k, quote_plus(v)) for k, v in unsigned_items)
+
+        # 获得最终的订单信息字符串
+        signed_string = quoted_string + "&sign=" + quote_plus(sign)
+        return signed_string
+
+    def ordered_data(self, data):
+        complex_keys = []
+        for key, value in data.items():
+            if isinstance(value, dict):
+                complex_keys.append(key)
+
+        # 将字典类型的数据dump出来
+        for key in complex_keys:
+            data[key] = json.dumps(data[key], separators=(',', ':'))
+
+        return sorted([(k, v) for k, v in data.items()])
+
+    def sign(self, unsigned_string):
+        # 开始计算签名
+        key = self.app_private_key
+        signer = PKCS1_v1_5.new(key)
+        signature = signer.sign(SHA256.new(unsigned_string))
+        # base64 编码，转换为unicode表示并移除回车
+        sign = encodebytes(signature).decode("utf8").replace("\n", "")
+        return sign
+
+    def _verify(self, raw_content, signature):
+        # 开始计算签名
+        key = self.alipay_public_key
+        signer = PKCS1_v1_5.new(key)
+        digest = SHA256.new()
+        digest.update(raw_content.encode("utf8"))
+        if signer.verify(digest, decodebytes(signature.encode("utf8"))):
+            return True
+        return False
+
+    def verify(self, data, signature):
+        if "sign_type" in data:
+            sign_type = data.pop("sign_type")
+        # 排序后的字符串
+        unsigned_items = self.ordered_data(data)
+        message = "&".join(u"{}={}".format(k, v) for k, v in unsigned_items)
+        return self._verify(message, signature)
+
+        for key, value in request.GET.items():
+            processed_dict[key] = value
+
+        sign = processed_dict.pop("sign", None)
+
+        alipay = AliPay(
+            appid="",
+            app_notify_url="http://127.0.0.1:8000/alipay/return/",
+            app_private_key_path=app_private_key_path,
+            alipay_public_key_path=alipay_public_key_path,  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+            debug=True,  # 默认False,
+            return_url="http://127.0.0.1:8000/alipay/return/"
+        )
+        verify_re = alipay.verify(processed_dict, sign)
+
+        if verify_re is True:
+            order_sn = processed_dict.get("out_trade_no", None)
+            trade_no = processed_dict.get('trade_no', None)
+            trade_status = processed_dict.get('trade_status', None)
+
+            existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
+            for existed_order in existed_orders:
+                existed_order.pay_status = trade_status
+                existed_order.trade_no = trade_no
+                existed_order.pay_time = datetime.now()
+                existed_order.save()
+
+            return Response("success")
+
+    def post(self, request):
+        """
+        处理支付宝的notify_url返回
+        跳转
+        :param request:
+        :return:
+        """
+        processed_dict = {}
+        for key, value in request.POST.items():
+            processed_dict[key] = value
+
+        sign = processed_dict.pop("sign", None)
+
+        alipay = AliPay(
+            appid="",
+            app_notify_url="http://127.0.0.1:8000/alipay/return/",
+            app_private_key_path=app_private_key_path,
+            alipay_public_key_path=alipay_public_key_path,  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+            debug=True,  # 默认False,
+            return_url="http://127.0.0.1:8000/alipay/return/"
+        )
+        verify_re = alipay.verify(processed_dict, sign)
+
+        if verify_re is True:
+            order_sn = processed_dict.get("out_trade_no", None)
+            trade_no = processed_dict.get('trade_no', None)
+            trade_status = processed_dict.get('trade_status', None)
+
+            existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
+            for existed_order in existed_orders:
+                existed_order.pay_status = trade_status
+                existed_order.trade_no = trade_no
+                existed_order.pay_time = datetime.now()
+                existed_order.save()
+
+            return Response("success")
+
+
+serializers.py
+class OrderSerializer(serializers.ModelSerializer):
+
+    alipay_url = serializers.SerializerMethodField(read_only=True)
+
+    def get_alipay_url(self, obj):
+        # 返回支付宝支付的url
+        alipay = AliPay(
+            appid="",
+            app_notify_url="http://127.0.0.1:8000/alipay/return/",
+            app_private_key_path=app_private_key_path,
+            alipay_public_key_path=alipay_public_key_path,  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+            debug=True,  # 默认False,
+            return_url="http://127.0.0.1:8000/alipay/return/"
+        )
+
+        url = alipay.direct_pay(
+            subject=obj.order_sn,
+            out_trade_no=obj.order_sn,
+            total_amount=obj.order_mount,
+        )
+        re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
+
+        return re_url
+
+
+
+-----------------------------------------------------
+11-1  轮播图接口实现
+
+view.py
+class BannerViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    获取轮播图列表
+    """
+    queryset = Banner.objects.all().order_by("index")
+    serializer_class = BannerSerializer
+
+serializers.py
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+
+
+# 配置轮播图的url
+router.register(r'banners', BannerViewSet, base_name="banners")
+        fields = "__all__"
+
+
+----------------------------------------------------------------
+
+11-3  首页商品分类显示功能
+
+
+serializers.py
+
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = "__all__"
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoodsCategoryBrand
+        fields = "__all__"
+
+
+class IndexCategorySerializer(serializers.ModelSerializer):
+    brands = BrandSerializer(many=True)
+    goods = serializers.SerializerMethodField()
+    sub_cat = CategorySerializer2(many=True)
+    ad_goods = serializers.SerializerMethodField()
+
+    def get_ad_goods(self, obj):
+        # 获取首页商品类别广告
+        goods_json = {}
+        ad_goods = IndexAd.objects.filter(category_id=obj.id, )
+        if ad_goods:
+            good_ins = ad_goods[0].goods
+            goods_json = GoodsSerializer(good_ins, many=False, context={'request': self.context['request']}).data
+        return goods_json
+
+    def get_goods(self, obj):
+        # 获取商品
+        all_goods = Goods.objects.filter(Q(category_id=obj.id) | Q(category__parent_category_id=obj.id) | Q(
+            category__parent_category__parent_category_id=obj.id))
+        goods_serializer = GoodsSerializer(all_goods, many=True, context={'request': self.context['request']})
+        return goods_serializer.data
+
+    class Meta:
+        model = GoodsCategory
+        fields = "__all__"
+
+view.py
+class IndexCategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    首页商品分类数据
+    """
+    queryset = GoodsCategory.objects.filter(is_table=True, name__in=["生鲜食品", "酒水饮料"])
+    serializer_class = IndexCategorySerializer
+
+
+
+# 配置首页商品系列的url
+router.register(r'indexgoods', IndexCategoryViewSet, base_name="indexgoods")
+
+
+
+---------------------------------------------------------
+11-5 商品点击数、收藏数修改
+
+goods.view.py
+
+    def retrieve(self, request, *args, **kwargs):
+        # 点击数加一
+        instance = self.get_object()
+        instance.click_num += 1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+user_operation.view.py
+
+方法一：使用CreateModelMixin 的perform_create方法
+    # def perform_create(self, serializer):
+    #     收藏数 加一
+    #     instance = serializer.save()
+    #     goods = instance.goods
+    #     goods.fav_num += 1
+    #     goods.save()
+
+方法二： 使用django的信号量
+ 
+user_operation.signals.py
+
+"""
+使用django信号量完成收藏数修改
+"""
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.contrib.auth import get_user_model
+
+from user_operation.models import UserFav
+
+
+@receiver(post_save, sender=UserFav)
+def create_userfav(sender, instance=None, created=False, **kwargs):
+    # 添加收藏数
+    if created:
+        goods = instance.goods
+        goods.fav_num += 1
+        goods.save()
+
+
+@receiver(post_delete, sender=UserFav)
+def delete_userfav(sender, instance=None, created=False, **kwargs):
+    # 删除收藏数
+    goods = instance.goods
+
+    goods.fav_num  -= 1
+    goods.save()
+
+user_operation.apps.py
+
+    def ready(self):
+        import user_operation.signals
+
+------------------------------------------------------------
+11-6  商品库存和销量修改
+
+三种情况下，库存会发生变化：
+
+trade.view.py
+
+    def perform_create(self, serializer):
+        # 添加进购物车后，商品库存修改
+        shop_cart = serializer.save()
+        goods = shop_cart.goods
+        goods.goods_num -= shop_cart.nums
+        goods.save()
+
+    def perform_destroy(self, instance):
+        # 删除订单后，商品库存修改
+        goods = instance.goods
+        goods.goods_num += instance.nums
+        goods.save()
+        instance.delete()
+
+    def perform_update(self, serializer):
+        # 购物车修改数量后，商品库存修改
+        existed_record = ShoppingCart.objects.get(id=serializer.instance.id)
+        existed_nums = existed_record.nums  # 修改购物车数量前
+        save_record = serializer.save()  # 改购物车数量后
+        nums = save_record.nums - existed_nums  # 相差值
+        goods = save_record.goods
+        goods.goods_num -= nums
+        goods.save()
+
+trade.view.py
+
+支付完成后，销量增加
+
+      # 商品销量的修改
+                order_goods = existed_order.goods.all()  # 取OrderInfo的外键OrderGoods的related_name
+                for order_good in order_goods:
+                    goods = order_good.goods
+                    goods.sold_num += order_good.goods_num
+                    goods.save()
+
+
+
+----------------------------------------
+
+11-7 drf的缓存设置
+
+view.py
+from rest_framework_extensions.cache.mixins import CacheResponseMixin
+
+class GoodsListViewSet(CacheResponseMixin,mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+
+
+settings.py
+# 设置缓存时间
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 10
+}
+
+
+
+
+--------------------------------------------------------------
+11-9  drf的throttle设置api的访问速率
+
+settings.py
+# 设置 api 访问次数限制
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    }
+}
+
+view.py
+
+    # 对 api 访问次数速率进行限制
+    # throttle_classes = (UserRateThrottle, AnonRateThrottle)
+
+
+---------------------------------------------------------------
+------------------------------------------------------------------
+
+第三方登录：
+12-1 第三登录开发模式以及oauth2.0简介
+12-2 oauth2.0获取微博的access_token
+
+
+utils.weibo_login.py
+"""
+其中的 redirect_uri  ：回调地址，需与注册应用里的回调地址一致
+      client_id  ：申请应用时分配的AppKey。
+      client_secret  ：申请应用时分配的AppSecret。
+都是在微博开放平台注册后，可以得到的数据。
+"""
+
+
+def get_auth_url(client_id):
+    """OAuth2的authorize接口"""
+    # 微博请求地址
+    weibo_auth_url = "https://api.weibo.com/oauth2/authorize"
+    redirect_uri = ""  # 授权回调地址， 即本地或者应用的地址
+    auth_url = weibo_auth_url+"?client_id={client_id}&redirect_uri={redirect_uri}".\
+        format(client_id=client_id, redirect_uri=redirect_uri)
+    print(auth_url)
+    " 这个函数会返回 http://www.example.com/response&code=CODE" \
+    " code 用于第二步调用oauth2/access_token接口，获取授权后的access token"
+
+
+def get_access_token(code):
+    """OAuth2的access_token接口"""
+    # 获取access_token
+    access_token_url = "https://api.weibo.com/oauth2/access_token"
+
+    import requests
+    re_dict = requests.post(access_token_url, data={
+        "client_id": "",
+        "client_secret": "",
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": "",
+
+    })
+    # 该函数返回的数据为：
+ #      {
+ #       "access_token": "ACCESS_TOKEN",
+ #       "expires_in": 1234, # access_token的生命周期
+ #       "remind_in":"798114",
+ #       "uid":"12341234"
+ # }
+
+
+def get_user_info(access_token, uid):
+    """根据得到的access_token进行微博登录测试"""
+    user_url = "https://api.weibo.com2/users/show.json?access_token={access_token}&uid={uid}".\
+        format(access_token=access_token, uid=uid)
+    print(user_url)
+
+12-3 social_django集成第三方登录
+
+settings.py
+...
+    'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
+            ],
+...
+
+
+# 自定义用户验证
+AUTHENTICATION_BACKENDS = {
+    "users.views.CustomBackend",
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.weibo.WeiboOAuth2',
+    'social_core.backends.qq.QQOAuth2',
+    'social_core.backends.weixin.WeixinOAuth2',
+
+}
+
+# 微博配置client_id或client_secret参数
+SOCIAL_AUTH_WEIBO_KEY = 'client_id'
+SOCIAL_AUTH_WEIBO_SECRET = 'client_secret'
+
+SOCIAL_AUTH_QQ_KEY = 'client_id'
+SOCIAL_AUTH_QQ_SECRET = 'client_secret'
+
+SOCIAL_AUTH_WEIXIN_KEY = 'client_id'
+SOCIAL_AUTH_WEIXIN_SECRET = 'client_secret'
+
+# 微博登录成功之后跳转的页面
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'
+
+
+urls.py
+    # 配置第三方登录url
+    url('', include('social_django.urls', namespace='social'))
+
+
+
+
+extra_apps.social_core.actions.py
+
+
+def do_complete(backend, login, user=None, redirect_name='next',
+                *args, **kwargs):
+
+
+....
+
+        response = backend.strategy.redirect(url)
+        payload = jwt_payload_handler(user)
+        response.set_cookie("name", user.name if user.name else user.username, max_age=24*3600)
+        response.set_cookie("token", jwt_encode_handler(payload), max_age=24*3600)
+        return response
+...
+
+
+
+-------------------------------------------------------------------
+
+*********************************************************************
+----------------------------------------------------------------
+
+错误日志日志管理；sentry 
+
+  没有sentry 的时候，很多是使用 logging来查看错误日志的。
+  这个需要登录到服务器去查看文件
+  我们要主动去查询，web系统
+  
+  当出现bug的时候，采用发邮件的方式， 但是如果当短时间访问的数量很多的时候，就会发送相同的邮件到邮箱中，>100等等，并不方便。 而很多公司都是采用 jira进行bug的集中管理， 通过jira，将bug 分配到相应的管理账户中去。
+
+
+基于此，采用sentry进行错误日志的管理。
+
+采用在线浏览的方式，对bug进行分配管理， 还可以进行项目的管理，出现多个项目的时候，采用分项目的方式进行bug的管理，更加方便
+
+
+sentry使用Python写的，但是支持多种语言。
+
+
+根据视频采用docker的方式安装最新的sentry
+
+
+settings.py
+INSTALLED_APPS = (
+    'raven.contrib.django.raven_compat',
+)
+
+# sentry实现错误日志管理与监控
+RAVEN_CONFIG = {
+    'dsn': 'sentry注册后，建立的项目的DSN',
+}

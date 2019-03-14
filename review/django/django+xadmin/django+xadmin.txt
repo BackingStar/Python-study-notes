@@ -1,0 +1,537 @@
+models
+
+class UserMessage(models.Model):
+ #类型：
+  
+#设置MySQL的主键：
+object_id =models.CharField(max_length=50, default="",primary_key=True)
+
+name = models.CharField(max_length=20,null=True,blank=True,default="",verbose_name=u"联系人"
+
+对于CharField必须指定最大长度，这里后面表示可以为空，默认为空，最后的Uuicode编码，可以看作是对字段的注释，对于后台的管理有很大的作用。
+
+email = models.EmailField(verbose_name=u"邮箱")
+此处的EmailField为高级玩意儿
+
+address = models.CharField(max_length=100,verbose_name=u"联系地址"）
+message = models.CharField(max_length=200,verbose_name=u"留言信息")
+
+  常用的类型：
+	models.ForeignKey
+	models.DateTimeField
+	models.IntegerField
+	models.IPAddressField
+	models.FileField
+	models.ImageField
+
+    class Meta:
+	 verbose_name= u"用户留言信息"
+	 verbose_name_plural= verbose_name 
+表示为复数信息，如果这句话不指定的话，就会在u"用户留言信息"后面加一个s，即u"用户留言信息"s
+	 db_table ="user_message"
+	 指定数据表的名字
+	 ordering = ".object_id"
+	 默认排序方式
+
+
+
+数据迁移：在一般更新数据后，都需要搞一次
+
+ makemigrations message
+ migrae message
+
+
+settings:
+
+添加MySQL数据库
+在DATABASES里面，将sqlite 改为mysql
+然后下面添加语句：
+‘NAME’:"数据库名字",
+'USER':"root",
+'PASSWORD':"密码",
+'HOST":"localhost或者127.0.0.1"
+
+
+views:
+
+ 类名.object().all() 得到所有的数据
+ 类名.object().filter(name='a',age='6') 得到数据库中name='a',age='6'的值
+
+例子：all_message = UserMessage.object().all()
+     或者：all_message = UserMessage.object().filter(name='a',age='6')
+ 	for message in all_message:
+	   print message.name
+
+具体应用：
+   user_message = UserMessage()#类的实例化
+   user_message.name = 'abc'
+   user_message.age = '5'
+   user_message.save()
+
+这样，刷新后就会自动存入到连接的数据库中，不必进行繁琐的数据库，这就是models中ORM的魅力
+
+
+将网页中的数据提交到数据库中：
+views:
+
+增：
+def getform(request):
+    if request.method == 'POST’
+	name = request.POST.get('name','')
+ 	message = request.POST.get('message','')
+ 	address = request.POST.get('address','')
+ 	email = request.POST.get('email','')
+	user_message = UserMessage()
+ 	user_message.name = name
+ 	user_message.age = message
+ 	user_message.address = adress
+ 	user_message.email = email
+ 	user_message.save()
+
+return render(request,"message_form.html"）
+
+删：
+all_message = UserMessage.object().filter(name='a',age='6')
+all_message.delete()
+  或者：
+for message in all_message:
+	 message.delete()
+
+
+查：all_message = UserMessage.object().filter(name='a',age='6')
+
+
+Django中，不允许直接将任意的form直接向URL中提交，因此要在html的form的最后加上{% csrf_token %}
+不然整个表单无法提交，这是一种保护机制
+<form>
+...
+...
+{% csrf_token %}
+</form>
+
+
+
+url和templates配置：
+
+url:
+在URL配置中，给url命一个名字，可以保证在以后对于url修改中，不用再去修改所有页面中的url名字，只是修改url配置中的名字就可以了。名字进行了一个映射
+urlpatterns = {
+	url(r'^admin.',admin.site,urls),
+	url(r'^form/$',getform,name='go_form')
+
+}
+
+例如：修改url名字 url(r'^dadaad_form/$',getform,name='go_form'
+      只用修改此处就可以了，其他地方不用再做别的改动。
+
+那么在templates中的html中，url应该怎么配置呢。
+
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+ </head>
+ <body>
+  <form action="/form/" method="post" class="smart-green">
+    <h1>留言信息
+		<span> 请留下你的信息,</span>
+    </h1>
+
+只需要将其中的/form/改为{% url 'go_form'%},就可以了
+即：
+<body>
+  <form action="{% url 'go_form' %}" method="post" class="smart-green">
+    <h1>留言信息
+		<span> 请留下你的信息,</span>
+    </h1>
+
+
+templates配置：
+使用{{ }}代替html中的值。
+
+有{%if  message.name =="abc" %} 
+	abc 
+  {% else %} 
+	not abc
+  {% end if %}
+
+等效于
+{% ifequal message.name "abc"}
+	abc
+{% else %} 
+	not abc
+  {% end ifequal %}
+
+
+还有：
+{% ifequal message.name|slice:'5' "abc"}
+表示其中的5个与abc向匹配，相当于传了一个参数作为限制条件。
+
+django实现分页
+from django.core.paginator import Paginator
+
+iter="abcdefghijklmn"
+paginator = Paginartor(iter,4) #将iter限制在每页为4条
+paginator.page(1).object_list
+>>abcd
+paginator.page(3).object_list
+>>ijkl
+paginator.page(3).has_next()
+>>True
+paginator.page(3).number #当前页数
+>>3
+paginator.num_pages #总的页数
+>>4
+
+{% for i in a %} #循环可以嵌套，但每次都要结束endif
+{%endfor%}
+
+{%if a %}
+{% endif %}
+
+主模板与子模板：
+字模板相等于继承主模板的的固定的部分，其余需要改变的地方，替换就好了
+
+主模板
+main.html
+在需要替换的代码位置写上
+{% block name1 %}
+{% end block%}
+
+{% block name2 %}
+{% end block %}
+
+子模板
+small.html
+{% extends 'main.html' %} #首行
+
+{% block name1 %}
+中间填写要替换的代码
+{% end block %}
+
+{% block name2 %}
+中间填写要替换的代码
+{% end block %}
+
+
+取出文件:为字典结构
+xx._get_collection().aggregate(xx)
+
+在经很多APP加入到新的文件包apps中时，添加路径，才能编译不出错
+import sys
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
+
+每当新建一个文件夹的时候为了，不在导入的时候加上 文件名.路径， 所以使用这种在添加到settings中去，更加方便
+
+重载__unicode__(self)  方法，是为了显示你自己需要定义的东西。
+  def __unicode__(self):
+        return '{}({})'.format(self.code, self.email)
+
+使用xadmin 比admin更加方便，需要添加 adminx.py 文件，而不是使用app下的admin文件,用于设计后台管理的
+
+需要重新更新注册表，
+makemigrations xadmin   这是与之前的注册表产生对比
+migrate xadmin      这是更新注册表
+
+---------------------------------------------------------------------
+
+定义后台与models之间的关系
+app的model注册
+
+class EmailVerifyRecordAdmin(object):
+    # 后台显示
+    list_display = ['code', 'email', 'send_type', 'send_time']
+    # 后台查找，不要加时间，容易出错
+    search_fields = ['code', 'email', 'send_type']
+    # 使用过滤器筛选，这样就可以加上时间了
+    list_filter = ['code', 'email', 'send_type', 'send_time']
+注册model
+xadmin.site.register(EmailVerifyRecord, EmailVerifyRecordAdmin)
+
+
+
+对于有外键的字段：
+例如：
+ course = models.ForeignKey(Course, verbose_name=u"课程")
+
+在list_filter进行过滤的时候，要显示course的名字，需要加一个双下划线+名字
+即： course__name
+list_fiter = ["course__name",...]
+
+
+xadmin设置显示主题和将app的model折叠在一起
+
+import xadmin
+from xadmin import views
+
+# 显示主题设计
+class BaseSetting(object):
+    enable_themes = True
+    use_bootswatch = True
+
+
+# 全局设置，设置标题和底部信息
+class GlobalSettings(object):
+    # 设置标题
+    site_title = "慕学后台管理系统"
+    # 设置底部
+    site_footer = "慕学在线网"
+    # 让所有的app的model折叠在一起
+    menu_style = "accordion"
+xadmin.site.register(views.BaseAdminView, BaseSetting)
+xadmin.site.register(views.CommAdminView, GlobalSettings)
+
+修改左侧的名字：
+在app的apps.py下添加
+verbose_name = u"用户信息"
+然后在__init__下添加
+default_app_config = "users.apps.UsersConfig"
+
+用户登录
+1、使用函数方式
+
+def user_login(request):
+    if request.method == 'POST':
+        user_name = request.POST.get("username", "")
+        pass_word = request.POST.get("password", "")
+        user = authenticate(username=user_name, password=pass_word)
+
+        if user is not None:
+            login(request, user)
+            return render(request, "index.html")
+        else:
+            return render(request, 'login.html', {'msg': '用户名或密码错误'})
+
+    elif request.method == "GET":
+        return render(request, 'login.html', {})
+
+还可以重写authenticate方法，自定义登录的验证方式
+
+# 自定义验证，可以使用邮箱等。。自己指定
+class CustomBackend(ModelBackend):
+    def authenticate(self, username=None, password=None, **kwargs):
+        try:
+            user = UserProfile.objects.get(Q(username=username) | Q(email=username))
+            if user.check_password(password):
+                return user
+        except Exception as e:
+            return None
+这样需要在settings里添加
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
+
+2、 使用django 自带的类来完成
+
+class LoginView(View): 
+    # 使用自带的函数实现get\post判断 
+    def get(self, request):
+        return render(request, 'login.html', {})
+    
+    def post(self, request):
+        user_name = request.POST.get("username", "")
+        pass_word = request.POST.get("password", "")
+        user = authenticate(username=user_name, password=pass_word)
+        
+        if user is not None:
+            login(request, user)
+            return render(request, "index.html")
+        else:
+            return render(request, 'login.html', {'msg': '用户名或密码错误'})
+
+
+3、 使用form实现登录
+在进行数据库验证之前首先在form中验证是否符合要求，减少数据库访问的压力
+
+新建forms.py
+from  django import forms
+
+class LoginForm(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.CharField(required=True, min_length=5)
+
+在views的LoginView中的post中添加login_form = LoginForm(request.POST)
+ def post(self, request):
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            user_name = request.POST.get("username", "")
+            pass_word = request.POST.get("password", "")
+            user = authenticate(username=user_name, password=pass_word)
+
+            if user is not None:
+                login(request, user)
+                return render(request, "index.html")
+            else:
+                return render(request, 'login.html', {'msg': '用户名或密码错误'})
+
+        else:
+            return render(request, 'login.html', {'login_form': login_form})
+
+然后在login.html中，输出信息添加：
+{% for key,value in login_form.errors.items %}{{ value }}{% endfor %}{{ msg }}
+    
+http是一种无状态请求机制，并不能保存信息，因此，引入了cookie
+
+cookie: 是浏览器本地存储的一种机制，与服务器无关，保存服务器发送给用户的id等，包括浏览记录，账号密码等，保存的类型为键值对
+
+访问机制：第一次访问，服务器给浏览器分配ID，第二次访问 带着ID访问服务器，服务器根据ID就能知道用户的一些信息。
+
+但是cookie这种机制，一旦当别人得到了你的电脑，就能得到你cookie里所有的信息，并不安全，因此，引出了 session机制
+
+
+session 根据用户名和密码加密生成数据ID，是服务器生成的，数据都比较具有较高的安全性。 
+
+访问服务器的时候，加上session，只需要将session的ID带过去，服务器就知道了用户，不在需要用户名和密码，  
+
+
+
+********************-------------配置上传文件目录-----*******************
+配置上传文件并使用media的方法：
+       
+1、在项目根目录新建一个文件夹为 media
+
+2、在setting中添加：
+ MEDIA_URL = '/media/'
+ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+setting中的TEMPLATES中添加
+
+'django.core.context_processors.media'  #这是为了让html能够识别 MEDIA_URL，将其自动注册到html中去
+
+3、在urls中添加：
+导入包 from django.views.static import serve
+       from MxOline.settings import MEDIA_ROOT
+# 配置上传文件的访问处理函数
+   url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
+
+4、这样就能将上传的文件保存到media中去，然后使用的时候，在html中直接可以:
+  {{MEDIA_URL}}{{对象.image}}
+
+****************************--------------------------****************
+
+
+
+
+
+常见的web攻击
+
+1....sql注入攻击
+
+sql注入的危害：
+  非法读取、篡改、删除数据库中的数据
+  盗取用户的各类敏感信息，获取利益
+  通过修改数据库来修改网页上的内容
+  注入木马等等
+
+具体流程：
+
+通过加入sql参数，从而使得sql语句失效，没有完成应该完成的检查，完成sql注入
+POST GET等都可以使用特殊字符，完成sql语句的注入，
+
+例如：
+class LOginUnsafeView(View):
+    def get(self, request):
+        return render(request, 'login.html', {})
+
+    def post(self, request):
+        user_name = request.POST.get('username', '')
+        pass_word = request.POST.get('password', '')
+
+        import MySQLdb
+        conn = MySQLdb.connect(host='127.0.0.1', user='root', password='xxxxx', db='mxonline', charset='utf8')
+        cursor = conn.cursor()
+        sql_select = "select * from users_userprofile where email='{0}' and password='{1}'".format(user_name, pass_word)
+
+        result = cursor.execute(sql_select)
+        for row in cursor.fetchall():
+            # 查询到用户， 进入到登录逻辑
+            pass
+        print('fail')
+	
+
+
+这样，只需要在登录窗口填写： 
+用户名： ' OR 1=1# 
+密码： 随意输入(123)
+
+而在后台逻辑中，得到的sql语句就是：
+select * from users_userprofile where email=‘’OR 1=1# and password='123
+
+可见：用户名为空，1=1为真，后面都不用执行，就可以进入到登录逻辑，完成登录，查询到所有的用户。
+
+
+就可以随意登入进去，得到所用用户的信息。完成sql语句的注入，实现攻击
+大部分的sql攻击都是通过 修改参数，来完成的
+
+sql防护：
+  所有的原因都是因为没有对用户名和密码进行验证，而Django的orm模式，都是具有sql防范的措施，都考虑到了这些攻击，对一些特殊字符进行了转义
+
+
+
+2...xss攻击
+
+xss跨站脚本攻击（Cross Site Scripting）的危害
+  盗取各类用户账号，如用户网银账号，各类管理员账号
+  盗窃企业重要的具有商业价值的资料
+  非法转账
+  控制受害者机器向其他网站发起攻击，注入木马等等
+
+由于在http://www.bank.com/product.list.?name='iphone6'
+没有将name后面的字符进行  检查，验证。
+黑客就为在name后面添加一个js脚本，比如：
+http://www.bank.com.product/list.?name=<script>x=document.cookie;laert(x);</script>
+得到用户的cookie，从而伪造成用户登录银行，得到账户信息等。
+
+
+具体流程：
+  1、向用户发送一个链接：http://www.bank.com.product/list.?name=<script>x=document.cookie;laert(x);</script>
+  2、用户点击url，发送给服务器(bank.com)
+  3、浏览器执行脚本后 从 服务器(bank.com)返回数据
+  4、通过脚本，将返回的cookie发送给黑客
+  5、黑客拿着这个cookie伪装成用户，连接到服务器中，实现伪装登录。
+
+xss 攻击的防护：
+  1.首先代码里对用户输入的地方和变量都需要仔细检查长度和对 "<", ">", ";", " ' "等html敏感字符进行过滤
+  2.避免直接在cookie中泄露用户隐私， 例如email，密码等等
+  通过使cookie和系统Ip绑定来降低cookie泄露后的危险
+  
+  3.尽量使用POST而非GET提交表单
+
+
+3..csrf攻击
+
+csrf跨站请求伪造（Cross-sites request forgery）的危害
+  以你的名义发送邮件
+  盗取你的账号
+  购买商品
+  虚拟货币转账
+
+具体流程；
+    
+	1、信任并登录服务器（A）
+用户：  2、服务器（A）返回session id                 服务器（A）
+  	3、用户每次请求都会带上seeeion id
+
+        4、用户在没有登录的情况下访问 危险服务器（B）   危险服务器（B）
+ 	5、危险服务器（B）要求用户访问A的一个url
+
+  其实实际是危险服务器发出的一个转账请求，并不是用户主动的，当这个请求访问到服务器(A）的时候，由于其带有 session id, 服务器（A）以为是用户，执行这个请求，最终完成csrf攻击
+
+
+这个csrf攻击 不仅用于get提交，POST提交也会被攻击到
+
+
+csrf防护：
+  Django 的表单在每一次提交表单的时候，都会带入csrf_token，且只有一次性，当失效的时候，验证并不会通过。
+
+
+
+
+
+xadmin的目录机构：就是对admin的封装。
+locale: 语言包
+migrations: 对添加表的时候，使用的文件夹
+plugins: 各种显示，导出，编辑等等插件（多看，可以自己开发）
+static: 所有static文件css,js.fonts
+

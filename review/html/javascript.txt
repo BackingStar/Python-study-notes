@@ -1,0 +1,1088 @@
+html中导入java语言是用<% int a=5; %> 这个导入的
+
+
+JavaScript 概述
+
+JavaScript 是基于对象和事件驱动的脚本语言，主要应用在客户端
+特点：
+1、交互性：它可以做的就是信息的动态交互
+2、安全性：不允许自己访问本地硬盘
+3、跨平台性： 只要可以解析JS的浏览器都可以执行，和平台无关
+
+JavaScript和Java的区别：
+
+1、js是netscape公司的产品，前身是livescript;Java是sun公司的产品，现在是Oracle公司的产品
+2、JS是基于对象，Java是面向对象
+3、JS只需要解释就可以执行，Java需要先编译成字节码文件，在执行
+4、 JS是弱类型，Java是强类型 （强类型是指：对每一种数据都定义好其类型，并对该类型的分配空间进行好定义，如：Byte就是一个字节；弱类型：是指给一个空间，爱塞什么塞什么）
+
+注释语句和java一样  //
+
+1...js和html的结合方式
+  （1） 将javascript代码封装到<script>标签中
+  （2）  将javascript代码封装到js文件中，并通过<script>中的src属性进行导入
+
+注意：如果<script>标签中使用src属性，那么该标签中封装的javascript代码不会被执行，所以通常导入js文件都是单独用<script>来完成
+
+<html>
+<head>
+</head>
+<body>
+<!--导入一个js文件-->
+<script type="text/javascript" src="dema.js"></script>
+<!--封装javascript代码-->
+<script type="text/javascript">
+ 	alert("hello javascript");
+</script>
+</body>
+</html>
+
+创建一个js文件：
+dema.js
+alert("hello javascript");
+*******************************************************
+javascript的语法：
+
+通常高级程序设计语言所包含的语法内容：
+1、关键字： 该种语言中被赋予了特殊含义的单词
+2、标识符： 用于标识数据表达式的符号。通常可以理解为在程序自定义的名称，比如变量名，函数名
+3、注释: 注解说明解释程序，用于调试程序
+4、变量名：用于标示内存中的一片空间，用于存储数据，该空间中的数据是可以变化的。
+   什么时候使用变量，当数据不确定的时候
+5、运算符： 可以让数据进行运算的符号
+6、语句：用于对程序的运行流程进行控制的表达式
+7、函数；用于对功能代码进行封装，便于提高复用性
+8、数组：对多数据进行存储，便于操作，就是传说中的容器
+9、对象： 只要是基于对象的语言，或者是面向对象的语言，就存在着对象的概念
+          对象就是一个封装体，既可以封装数据，又可以封装函数
+
+这些都是高级程序设计语言具备额共性内容，只不过各种语言对这些内容的表现形式有所不同，但是使用基本思想的一致的。
+
+************************************
+
+1...js语法变量：var
+
+注意： javascript中单引号 双引号 都是表示字符串，在javascript中没有字符一说
+<script type="text/javascript">
+/*
+js中定义变量，使用关键词：var
+*/
+//定义变量，js是弱类型的
+var  x=4;//var 不写也行，因为js是非严谨的语言，但是我们开发的时候建议按照严谨的方式来定义
+x="abc";//重新赋值为字符串abc
+x=3.45;//重新赋值为小数，其实也是数字类型
+x=true;// 赋值为boolean类型
+x='c';//赋值为字符串c
+
+alert("x="+x);//这是一个函数，将具体的参数通过对话框进行显示
+</script>
+
+2..js语法：运算符 
+
+运算符：
+1、算术运算符：+-*/ % -- ++
+2、赋值运算符： = += -= *= /= %=
+3、比较运算符: > < >= <= == !=  运算的结果要么是false 要么是true
+4、逻辑运算符: ! && ||  用来连接两个boolean类型的表达式 ，要么false要么true
+5、位运算符 ： & |^ >> << >>> (与 或 异或 右移位 左移位 无符号右移位)
+6、三元运算符： ？：
+
+2.1 算术运算符 演示：
+
+var a=3710;
+alert("a="+a/1000*1000);//a=3710,不是3000
+
+var a1=2.3, b1=4.7;
+alert("a1+b1="+(a1+b1));//a1+b1=7,不是7.0
+
+alert("13"+1);//131
+alert("13"-1);//12
+
+alert(true+1);//2 //因为在js中false就是0，或者null，非0，非null，就是true，默认用1表示
+
+var n=3,m;
+m=++n;
+alert("n="+n+",m="+m);//n=4,m=4
+
+2.2 赋值运算符
+
+var i=3;
+i+=2;
+alert("i="+i);//i=5
+
+2.3 比较运算符
+ var z=3;
+alert(z!=4);//true
+
+2.4 逻辑运算符
+
+var t=4;
+alert(t>0&&t<6);// true
+                //如果是 t>0&t<6 则结果是：1
+alert(!true);//false
+
+2.5 位运算符
+
+var c=6;
+alert(c&3);// 2
+alert(5^3^3);//5
+alert(c>>1);//3
+alert(c<<2);//24
+
+2.6 三元运算符
+
+3>0?alert("yes"):alert("no");//yes
+
+alert(3>0?100:200);//100
+
+3..小细节
+3.1 undefined: 未定义，其实他就是一个常量
+<script type="text/javascript">
+var xx;
+alert(xx);// undefined
+alert(xx==undefined);//true
+
+//要想获取具体只的类型，可以通过typeof来完成
+alert(typeof("abc"));//String
+alert(typeof(2.58));//number
+alert(typeof(true));//boolean
+alert(typeof(78));//number
+alert(typeof('9');//String
+alert(typeof("abc")=='string');//true
+alert(typeof(2.5)=='number');//true
+</script>
+
+4...语句
+4.1.顺序语句
+4.2 判断语句
+4.3 选择语句
+4.4 循环语句
+4.5 其他语句
+
+<script type="text/javascript">
+var x=3;
+if(x=4)//注意  这样是不会报错的，因为x=4 是true
+if(4==x){//建议将常量放在左边，以报错来修正代码
+     alert("yes");
+else{
+     alert("no");
+}
+
+
+	}
+</script>
+****************************************
+if语句
+
+var x=3;
+if(x>1)
+	alert("a");
+else if(x>2)
+	alert("b");
+else if(x>3)
+	alert("c");
+else 
+	alert("d");
+
+//注意，这样输出的结果是： a
+  因为这些语句是一体的，一个执行完就结束了
+
+
+*************************************
+switch 语句
+
+var x="abc";
+switch(x){
+	case "kk":
+	    alert("a");
+	    break;
+	case "abc"
+	     alert("b");
+	     break;
+	default:     // 这个语句无论放在那里都是其他语句执行完之后在执行的
+	      alert("c");
+	      break;//可以省略
+
+}
+
+*****************************************
+循环语句
+
+var x=1;
+document.write("<font color='blue' >");//对当期标签中的文字进行自定义
+while(x<10){
+	alert("x="+x;
+	//将数据直接写到当前页面中
+	document.write("x="+x+"<br/>");
+	x++;
+}
+document.write("</font>");
+
+
+for(var=0;x<3;x++)
+	document.write("x="+x+"<br/>");
+************************************************
+
+其他语句： break  continue
+
+w：for(var x=0;x<3;x++){//标号
+	for(var y=0;y<4;y++){
+	   document.write("x=="+x);
+	   continue  w;//结束本次循环，输出为： x==0x==1x==2
+	    break w;//跳出当前循环 ，输出为：x==0
+}
+}
+
+******************************************
+练习：九九乘法表
+
+<html>
+<head>
+<link rel="stylesheet" href="table.css"/>
+</head>
+<body>
+   <script type="text/javascript">
+       document.write("<table>");
+       for(var x=1;x<=9;x++){
+          document.write("<tr>");
+	  for(var y=1;y<=x;y++){
+             document.write("<td>"+y+"*"+x+"="+y*x+"</td>");
+	   }
+ 	   document.write("</tr>");
+          }
+	 document.write("</table>");
+   </script>
+</body>
+</html>
+
+table.css文件：
+table,table td{
+    border: #0000ff solid 1px;
+    width: 600px; 
+}
+
+*********************************************
+
+4...数组
+
+数组用于存储更多的数据，是一个容器
+特点：
+  1、长度是可变的
+  2、元素的类型是任意的
+建议在使用数据时，存储同一类型的元素，操作起来较多方便。
+
+js中的数组定义的两种方式：
+1、var arr=[];  var=[2,1,3,4];
+2、使用了javascript中的Array对象来完成的定义
+    var arr=new Array();//相当于var arr=[];
+    var arr1=new Array(5);// 数组定义并长度为5
+    var arr2=new Array(3,4,45,);//数组定义，且其中的元素是 3 4 45
+-------
+
+var arr=[34,42,46];
+alert(typeof(arr));//对象类型 Object
+alert("len="+arr.length);  //3
+
+arr[4]=246;
+arr[1]="abc";
+arr[2]=true;
+for(var x=0;var<arr.length;x++){
+     document.write("arr["+x+"]="+arr[x]+"<br/>");
+}
+
+//输出结果： arr[0]=34
+	     arr[1]=abc
+	     arr[2]=true
+	    arr[3]=undefined
+	    arr[4]=246
+
+5.....函数
+
+js中的函数演示
+ 函数：就是一个功能的封装体
+      定义功能通常需要两个明确：
+	 1、功能的结果
+	 2、功能实现中的参与运算的未知的内容
+js中的定义函数的格式：
+
+  通过指定的关键字来定义
+  function 函数名（参数列表）{
+        函数体；
+	return 返回值；//如果没有具体的返回值，return语句 可以省略不写
+}
+
+function demo(){
+	alert("demo run");
+	return ;
+}
+   demo();// 调用函数
+/*
+
+加法运算
+*/
+function add(x,y){
+	return x+y;
+}
+  var sum=add(4,5);
+  alert("sum="+sum);
+
+
+函数小细节1：
+1、只要使用函数的名称就是对这个函数的调用
+2、函数中有一个数组在对传入的参数进行存储，这个数组就是arguments
+
+function show(x,y){
+   alert(arguments.length);
+   alert(x+":"+y);
+   for(var a=0;a<arguments.length;a++){
+   	document.write(arguments[a]);
+}
+}
+
+show(4,5,6,7,8,9);//这样是不会报错的，但是建议函数中定义有几个参数就传几个实参
+
+//输出结果： 456789
+
+函数的小细节2：
+
+function getsum(){
+	return 100;
+}
+
+var sum=getsum();
+alert("sum="+sum);//getsum函数运行，并将返回的结果赋值给sum
+
+var sum=getsum;//getsum 本身是一个函数名，而函数本身在js中就是一个对象,getsum就是这个函数对象的引用，将getsum这个引用的地址赋值给sum，这是sum也指向了这个函数对象。就是相当于这个函数对象有两个函数名称。
+
+alert("sum="+sum);//打印时候如果sum指向的是函数对象，那么会将该函数的字符串表现形式打印出来，就是该函数的代码定义形式
+
+//输出结果：sum=function getsum(){
+	return 100;
+}
+-----------------------
+function show2(){
+       	alert(" show2 run");
+}
+
+alert( show2);
+//输出结果： function show2(){
+	         alert( show2 run");
+}
+
+alert(show2());
+//输出结果：  show2 run
+	      undefined
+
+
+*******************************
+动态函数：
+
+js函数的气压表现形式：
+动态函数：使用的是js中内置的一个对象Function
+只不过用的并不多
+参数列表，函数体都是通过字符串动态性指定的
+
+var add=new Function("x,y","var sum;sum=x+y;return sum;");
+/*
+*function add2(x,y){
+	var=sum;
+	sum=x+y;
+	return sum;
+}
+* 功能差不多是一样的，但是Function 是动态函数，根据传入的参数动态选择进行计算，然而funtion是固定的 传入x,y类型。
+*/
+
+var hehe=add(4,5);
+alert("hehe="+hehe;
+
+************
+匿名函数：
+没有名字的函数，通常是函数的简写形式
+
+var add3=function(a,b){
+ 	return a+b;
+}
+alert(add(7,8));
+
+--------------------------
+function haha(){
+	alert ("haha run");
+}
+var xixi=haha;
+
+//上述代码可以简写成下面的方式
+
+var xixi=function(){
+ 	alert("haha run");
+}
+
+
+******************************************
+
+
+综合练习：
+1..定义
+
+功能，完成对数组的最值获取
+
+2..对数组排个序
+
+3.对数组查个找
+
+4..对数组元素进行反转
+
+<html>
+<head>
+</head>
+<body>
+<script type="text/javascript">
+var arr=[66,68,55,335,566,22,33,5];
+
+//1.取最值
+function getMax(arr){
+	var max=0;
+	for(var x=1;x<arr.length;x++){
+            if(arr[x]>arr[max])
+	        max=x;
+
+	}
+	return arr[max];
+}
+var maxvalue=getMax(arr);
+println("最大值marvalue="+maxvalue);//调用输出函数
+
+//输出函数
+function println(value){
+
+	document.write(value+"<br/>");
+}
+
+//2.排序
+function sortArray(arr){
+	for(var x=0;x<arr.length-1;x++)
+	  for(var y=x+1;y<arr.length-1;y++){
+              if(arr[x]>arr[y]){
+	        swap(arr,x,y);//调用交换函数
+	       }
+	  }
+}
+//对数组中的元素进行位置交换
+function swap(arr,x,y){
+      var temp;
+	temp=arr[x];
+	arr[x]=arr[y];
+	arr[y]=temp;
+}
+
+println("排序前："+arr);
+sortArray(arr);
+println("排序后："+arr);
+
+//3..数组查找
+function searchElement(arr,key){
+	for(var x=0;x<arr.length-1;x++){
+	    if(key==arr[x])
+	        return x;
+	}
+	return  -1;
+}
+//折半查找法：  必须要前提，必须是有序的数组
+ function binarySearch(arr,ket){
+	var min,max,mid;
+	min=0;
+	max=arr.length-1;
+	while(min<max){
+	  mid=(min+max)>>1;
+	  if(key<mid)
+	       max=mid;
+	  else if(ket>mid)
+	        min=mid;
+	  else 
+	        return mid;
+	}
+	return -1;
+}
+
+//对数组的反转
+function reverseArray(arr){
+	for(var start=0,end=arr.length-1;start<end;start++,end--)
+	    swap(arr,start,end);
+}
+	reverseArray(arr);
+	println("反转后："+arr);
+</script>
+</body>
+</html>
+
+
+
+------------------------------------------
+*********************************************
+-----------------------------------------------------
+
+
+全局变量和局部变量
+
+<script type="text/javasxript">
+  for(var x=0;x<3;x++){//脚本片段中定义的变量，是全局变量
+   document.write("x="+x);
+
+}
+function show(){
+  var x=6;//函数里面的都为局部变量
+}
+ 
+document.write("x==="+x);//输出 x=4,说明呀，x就是全局变量
+
+var x=3;//全局变量x
+
+function show(x){//函数局部变量
+    x=7;
+}
+show(x);
+
+document.write("x="+x);//x=3
+</script>
+
+******************************************
+
+1..常见对象 object
+
+演示一下object对象 
+toString(): 将对象变成字符串
+valueOf(); 返回对象的原始值
+
+function show(){
+  	alert("show run");
+}
+alert(show.toString()); //输出：function show(){
+  	                           alert("show run");
+                                     }
+
+var arr=[3,5,2,7];
+alert(arr.toString());//输出： 3，5，2，7
+
+var abc=function(){
+	alert("abc run");
+}
+alert(abc);//输出  function(){
+	                 alert("abc run");
+                   }
+
+alert(abc.valueOf()); //输出： function(){
+	                            alert("abc run");
+                              }
+
+2...常见对象 String 基本功能
+
+演示string对象
+表现形式：
+var str=new String("abc");
+var str="abc";
+
+封装： out.js
+function print(prom){
+ 	document.write(prom);
+}
+function println(prom){
+	document.write(prom+"<br/>");
+}
+
+var str="abcde";
+println("len="+str.length);//输出： len=5
+println(str.bold());//加粗
+println(str.fontcolor("red"));//字体；颜色
+println(str.link("www.163.com"));//将字符串变成超链接
+println(str.substr(1,3));//字符串的开始，长度：//输出：bcd
+println(str.substring(1,3));//字符串的开始，结束，包含头不包含尾
+                            //输出：bc
+3..常见对象 String 自定义功能
+//定义两个变量，一个记录开始的位置，一个记录结束的位置
+//对开始的位置的字符进行判断，如果是空格，就进行递增，直到不是空格为止
+//对结束的位置的字符进行判断，如果是空格，就进行递减，直到不是空格为止
+//必须保证开始<=结束，这样才可以进行截取
+
+<script type="text/javascript">
+function trim(s){
+var start,end;
+start=0;
+end= str.length-1;
+
+while(start<=end&& str.charAt(start)==' '){//str.charAt(start)表示start这个位置的值
+	start++;
+}
+while(start<=end&& str.charAt(end)==' '){
+	end--;
+}
+
+return str.substring(start,end+1);
+}
+
+var s="  ab c   ";
+alert("-"+trim(s)+"-");
+</script>
+
+//输出结果： -ab c-
+
+************************************
+4..常见对象 String 原型属性prototype
+
+直接用字符串对象调用：
+这里可以使用一个该字符串的原型属性来完成：
+
+原型： 就是该对象的一个描述，该描述中如果添加了新功能，那么该对象都会具备这些新功能，而prototype就可以获取到这个原型对象，通过prototype就可以对对象的功能进行扩展
+
+需求：  想要给string对象添加一个可以去除字符串两端空格的新功能，就可以使用原型属性来完成。
+
+//给String的原型中添加一个功能，注意：给对象添加新功能直接使用 对象.新内容 即可
+
+String.prototype.len=199;//给string的原型对象中添加一个属性名为len,值为199
+println("abc".len); //输出为： 199
+
+String.prototype.trim=function(){//开发的时候一般都是将这个封装到.js中
+  var start,end;
+  start=0;
+  end= this.length-1;
+
+  while(start<=end&& this.charAt(start)==' '){
+	start++;
+  }
+  while(start<=end&& this.charAt(end)==' '){
+	end--;
+  }
+
+  return this.substring(start,end+1);
+}
+
+alert("-"+"  ab cd  ".trim()+"-");
+
+************
+prototype 原型练习：
+
+练习1： 给字符串添加一个功能，将字符串变成一个字符数组
+练习2：给字符串添加一个功能，将字符串进行反转
+
+
+println.js
+//输出函数
+function println(value){
+
+	document.write(value+"<br/>");
+}
+
+stringTool.js
+/*
+添加一个功能，将字符串变成一个字符数组
+*/
+String.prototype.toCharArray=function(){
+  //定义一个数组
+ 	var chr=[];
+   //将字符串的每一位字符存储到字符数组中
+	for(var x=0;x<this.length();x++){
+            chr[x]=this.charAt[x];
+	}
+	return chr;
+}
+
+/*
+添加一个功能：将字符串进行 反转的方法
+*/
+String.prototype.reverse=function(){
+	var arr=this.toCharArray();
+//将数组位置置换功能进行封装，并定义到了反转功能内部
+// function swap(arr,a,b){ 
+      	var temp=arr[a];
+	arr[a]=arr[b];
+	arr[b[=arr[a];
+   }
+   for(var x=0,y=arr.length-1;x<y;x++,y--){
+	swap(arr,x,y);
+   }
+   return this.join("");
+}
+
+<html>
+<head>
+
+</head>
+<body>
+<script type="text/javascript" src="stringTool.js"></script>
+<script type="text/javascript" src="println.js"></script>
+<script type="text/javascript">
+var str="abcdefg";
+println(str.toCharArray());
+println(str.reverse());
+</script>
+</body>
+</html>
+
+
+****************---------------**************
+
+常见对象 Array基本功能
+<html>
+<head>
+</head>
+<body>
+  <script type="text/javascript">
+   //演示数组
+ //1...
+  concat 方法：连接数组
+    var arr=["abc","haha","avc","ad" ];
+    var arr2=["aa","xiaoqiang",70];
+    println(arr);
+    println(arr2);
+    //在数组上链接一个元素"mm",在连接一个arr2数组
+    var newArr=arr.concat("mm",arr2);//将mm作为新数组中的元素，将arr2数组中的元素也作为新数组中的元素
+     println(newArr);
+//2..
+   join 方法： 返回字符串值，元素之间由指定的分隔符进行分割
+     println(arr.join("-"));
+     //myjoin(arr,"+");
+     //模拟一下join的实现原理
+     function myjoin(arr,separator){
+     	var str="";
+	for(var x=0;x<arr.length;x++){
+	 if(x!=arr.length-1)
+	     str+=arr[x]+separator;
+	  else
+	   str+=arr[x];
+	}
+	return str;
+     }
+///3...
+   push 方法： 将新元素添加到一个数组中，并返回数组的新长度值，如果新元素为一个数组，那么该数组将作为一个单个元素添加到该数组中，将相当于二维数组
+//4...
+  pop 方法： 移除数组中的最后一个元素并返回该元素
+   println(arr.pop());
+//5...
+   reverse 方法： 将数组进行反转
+// 6...  
+    shift 方法：移除数组中的第一个元素并返回该元素
+   println(arr.shift());
+   println(arr);
+// 7... 
+    slice 方法： 返回数组的一段 
+  arrayObj.slice(start,end);//包含头不包含尾
+  如果start是负，则会进行 start+length 处理，如果end是负，则会进行end+length处理
+//8....
+   sort();方法 ：返回一个元素已进行了排序的数组
+//9...
+  splice 方法： 从数组中移除一个或多个元素，如果必要可以再移除元素的位置上插入新的元素，返回移除的元素
+  splice(start,删除个数,元素1，元素2...)
+  var temp=arr.splice(1,3,8080,5826,"xuxuxu","wang"); 
+  println(temp);
+  print(arr);
+
+//10..
+  unshift 方法：将指定的元素插入到数组开始位置并返回该数组
+  println(arr.unshift("uuu"));
+  </script>
+ 
+</body>
+</html>
+
+**************************
+
+常见对象 Array练习  堆栈和队列结构
+
+ <script type="text/javascript">
+    /*
+      数组练习
+	用数组实现js中的堆栈或者队列数据结构
+    */
+  var arr=[];
+   //arr.unshift("abc1","abc2","abc3");
+   arr.unshift("abc1");
+   arr.unshift("abc2");
+   arr.unshift("abc3");
+   println(arr);
+  println(arr.pop());
+  println(arr.pop());
+  println(arr.pop());// 至此是 先进先出，是为队列
+
+   arr.unshift("abc1");
+   arr.unshift("abc2");
+   arr.unshift("abc3");
+   println(arr);
+  println(arr.shift());
+  println(arr.shift());
+  println(arr.shift());//至此是 先进后出，是为堆栈
+</script>
+
+*********************
+给数组添加新功能，使用到原型属性
+
+var arr=["abc","haha","avc","ad" ];
+var maxValue=array.getMax();
+println("maxValue="+maxValue);
+println(array);
+
+新建array_tool.js 文件：
+
+Array.prototype.getMax=function(){
+	var temp=0;
+	for(var x=1;x<this.length;x++){
+       	   if(this[x]>this[temp])
+	      temp=x;
+	}
+	return this[temp];
+}
+
+//数组的字符串表现形式
+//定义toString方法，相当于java中的复写
+
+Array.prototype.toString=function(){
+     return "["+this.join("-")+"]";
+}
+
+*******************
+***********************
+演示js中的日期 Date
+
+注意：  一个月中 是用0-11代表1-12月份的
+        外国人都是用星期天代表一周的第一天
+<html>
+<head>
+</head>
+<body>
+  <script typr="text/javascript src="out.js">
+   var date=new Date();
+   println(date.toLocaleString());//日期和时间
+   println(date.toLocaleDateString());//只有时间
+ 
+  var year=date.getFullYear();
+  var month=date.getMonth();
+  var day=date.getDate();//这是一个月的一天
+  var  week=date.getDay();//这是一个星期的一天
+   println(year+"-"+month+"-"+day+"-"+weak);
+
+ // 自定义输出一周的天数
+    建一个一周的表
+    println(getWeek(date.getDay()));
+   function getWeek(num){
+        var weeks=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+        return weeks[num];
+   }
+------------------------------
+   //日期对象和毫秒值之间的转换
+    var date2=new Date();
+    // 获取毫秒值，日期对象--》毫秒值
+    var time=date2.getTime();
+    println(time); //1335826769625
+    //将毫秒值转成日期对象
+    var date3=new Date(time);
+------------------------------------------
+    //将日期对象和字符串之间进行转换
+    //1.. 日期对象转成字符串、toLocaleString  toLocaleDateString
+    //2..将字符串转成日期对象，具备指定格式的日期字符串-->毫秒值-->日期对象
+     var str_date="9/28/2017";
+     var time2=Date.parse(ste_date);
+     var  date3=new Date(time2);
+     println(date3);
+</script>
+</body>
+</html>
+
+********************
+js中的特殊语句： with
+
+为了简化对象调用内容的书写
+可以使用js中的特有语句with来完成
+格式： 
+   with(对象){
+             在该区域中可以直接使用指定的对象的内容，不需要写对象
+ }
+
+  var date=new Date();
+  var year=date.getFullYear();
+  var month=date.getMonth();
+  var day=date.getDate();//这是一个月的一天
+  var  week=date.getDay();//这是一个星期的一天
+   println(year+"-"+month+"-"+day+"-"+weak);
+
+
+这个可以写成：(就是不用每次都写一个 date.)
+  var date=new Date();
+  with(date){
+  var year=getFullYear();
+  var month=getMonth();
+  var day=getDate();//这是一个月的一天
+  var week=getDay();//这是一个星期的一天
+   println(year+"-"+month+"-"+day+"-"+weak);
+
+  }
+
+******************----------------*************
+
+演示Math对象，该对象中的方法都是静态的，不需要new ，直接Math调用即可
+
+var  num1=Math.ceil(12.34);//返回大于等于指定参数的最小整数
+var  num2=Math.floor(12.34);//返回小于等于指定数据的最大整数
+var  num3=Math.round(12.34);//四舍五入
+var  num4=Math.pow(10,2);//10的2次方
+
+for (var=0;x<10;x++){
+   var num=Math.foor(Math.random()*10+1); //随机数在1--10之间的整数
+   var num2=parseInt(Math.random()*10+1);// 随机数在1--10之间的整数
+            //parseInt 是全局变量，直接使用
+             //parseInt 返回字符串转换得到的整数
+}
+
+******************7*
+全局方法和 Number对象
+
+ parseInt("123");// 123
+ 演示global的全局方法
+ println("123"+1);//1231
+ println(parseInt("123")+1); //124
+
+ var val=parseInt("abc");
+println("value="+isNaN(val));//value=true  通过isNaN来判断结果是否非法
+ var val2=parseInt("12abc");
+ println("value="+val2); // value=12
+
+ // 将指定进制格式的字符串转成十进制
+ var num=parseInt("110",2);//将2进制的110转成10进制
+  println("num="+num);// num=6
+  var num1=parseInt("0x3c",16);//将16进制的0x3c转成10进制
+  println("num1="+num1);// num=60
+
+//将十进制转成其他进制，使用数字对象完成
+  var num3=new Number(6);
+  println("num="+num3.toString(2)); //输出 110
+  var num4=60;
+  println("num4="+num4.toString(16));//输出0x3c
+
+************-----------------------*************
+
+js中的特有语句： for in
+格式： 
+for( 变量 in 对象）//对对象进行遍历的语句
+ {
+  }
+
+ var arr=[43,53,53];
+ for(i in arr){
+     println("arr["+i+"]="+arr[i]);
+ }
+
+
+
+********************************
+  js 中的高级部分
+**********************************
+     js  自定义对象
+
+      函数模拟对象
+ 如果想要自定义对象，应该先对对象进行描述
+ js是基于对象，不是面向对象的，不具备描述事物的能力
+ 我们还想按照面向对象的思想编写js
+ 就要先描述，在js中，可以用函数来模拟面向对象的中的描述
+
+******** 1----------------
+// 用js来描述人 
+  function Person(){ // 相当于构造器
+      alert("person run");
+
+ }
+   //通过描述进行对象的建立  new 
+ var p=new Person();
+  //动态的给p对象添加属性，直接使用 p.属性名 即可
+  p.name="zhangsan";
+  p.age=35;
+ //如果定义的p对象的属性赋值为一个函数，即是给p对象添加一个方法
+  p.show=function(){
+      	alert("show:"+this.name+":"+this.age);
+   
+ }
+  p.show();
+
+**********2----------------
+ var obj=new Object();
+  obj.name="god father";
+  obh.age=2018;
+  alert(obj.name+":"obj.age);
+
+********3----------------
+ 
+ function  Person(name,age){
+    	//在给Person对象添加了两个属性
+     	this.name=name;
+ 	this.age=age;
+   	this.setName=function(name){
+ 	   this.name=name;
+ 	}
+ 	this.getName=function(){
+  	    return this.name;
+	]
+ }
+var p=new Person("wangcai",18);
+  p.setName("xiaoqiang");
+  alert(p.name);
+  alert(p.getName());
+
+for( x in p){
+     println(x);//  输出： name age setName getName
+     println(x+":"p[x]);// 输出  name:xiaoqiang
+     			  	 age:18
+			setName:function(name){this.name=name;}
+			getName:function(){return this.name;}
+   
+ }
+
+*************** 4-  键值对的形式------------------
+
+
+//直接使用{} 定义属性和值的键值对方式，键值对通过 ： 进行连接，键与键之间用逗号隔开
+
+ // 对象调用成员有两种方式： 对象.属性名 和   对象["属性名"]
+  var pp={
+ 	//定义一些成员
+ 	"name":"xiaoming","age": 27
+ 	"getName":function(){
+  	    return this.name;
+	 }
+
+ }
+   alert (pp["name"]+":"+pp.age);
+ // 对象调用成员有两种方式： 对象.属性名 和   对象["属性名"]
+
+  var map={
+	8:"xiaoqing",3:"wangcai",7:"xiaoming"
+  }
+    var val1=map[8];
+   alert("val1:"+val1);
+    var val2=get(7);
+    alert("val2:"+val2);
+   function get(key){
+    ruturn map[key];
+ }
+
+ var myobj={
+	myname:"lisi",myage:30
+ }
+  alert(myobj.myname+":"+myobj["myage"]);
+还可以写成：
+  var myobj2={
+    "myname2":"lisisi","myage2":57;
+ }
+  alert(myobj2.myname2+":"+myobj2["myage2"]);
+
+ var myMap={
+       names:["lisi","zhangsan","wangwu"],nums:[29,39,39,]
+       names2:[{name1:"aaa"},{name2:"bbb"}]
+ }
+  alert(myMap.names[1]);// 输出： zhangsan
+  alert (myMap.names2[0].name1); 输出：aaa 
+
+
+ 
+ ***************开发注意事项****
+ **************良好的命名习惯******
+  实体对象： o开头
+            var  oX=true;
+  整形对象： i开头
+  	    var iN=3;
+   字符串； s
+             var s;

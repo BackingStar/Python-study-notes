@@ -1,0 +1,52 @@
+www.projectsedu.com
+
+
+
+部署项目到云服务器：
+1、 购买服务器，选择CentOS系统， 部署服务器
+2、下载SecureCRT 连接远程服务器（远程连接工具）
+3、防止服务器不用的时候客户端会退出来：安装 tmux （屏幕管理工具，强大）
+   yum install tmux
+
+4、tumx # 就可以进去
+  -------------------
+4.1 
+    pwd(查看当前目录）
+    mkdir projiets(新建目录）
+    ls 进入目录,查看目录列表
+    mkdir MxShop
+5、在pycharm中添加服务器 SFTP连接上传项目代码，并同步
+
+6、传完之后，可以看一下
+   ls
+   cd MxShop/
+   ls
+   pwd
+7、 Centos部署nginx+uwsgi
+8、在navicat中，连接云服务器新建数据库，将本地的数据传到服务器上
+（传不上的时候，在工具里面-服务器监控-变量-将max-packet改大一点就行了）
+
+9、建立虚拟环境
+
+ ...
+ 查找文件位置： sudo find / -name ...
+
+
+安装 文件
+  pip install -r requirements.txt
+
+
+10、 pycharm settings配置
+   数据库那里：
+   HOST：‘线上服务器ip’
+  
+ALLOWED_HOSTS=['*']
+
+
+11、 调试服务器的代码
+
+   将解释器改为 服务器的 解释器
+   interpriter-add- SSH Interpriter
+   debug-mxshop-editing- 服务器ip
+ 
+部署的时候可以使用 WinSCP(有点像FTP，用于建立站点)，将本地的文件传到服务器上

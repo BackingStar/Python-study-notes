@@ -1,0 +1,511 @@
+l、CSS
+ CSS是层叠样式表（Cascading Style Sheets）用来定义网页的显示效果，可以解决html代码对样式定义的重复，提高了后期样式代码的可维护性，并增强了网页的显示效果功能，简单一句话：CSS将网页内容和显示样式进行分离，降低了耦合度，提高了显示功能
+
+ CSS代码格式：选择器名称{属性名：属性值；属性名：属性值；...}
+              属性与属性之间用 分号 隔开
+              属性与属性值之间用 冒号 隔开
+              如果一个属性有多个属性值的话，那么多个值用 空格 隔开
+ CSS代码注释是：/* */
+
+CSS样式优先级：  由上到下，由内到外，优先级由低到高
+              一般墙况下，后加载的优先级高
+ CSS与HTML结合的方式：
+ 
+1.每一个html标签中都有一个style样式属性，该属性的值就是css代码
+
+<div style="background-color:#000;color:#fff">这是一个div区域</div>
+
+<!--属性值用： 而属性之间用；-->
+
+
+2.使用style标签的方式，一般都是定义在head标签中
+<html>
+<head>
+    <style type="text/css">
+    div{
+       background-color:#000;
+       color:#fff
+     }
+     </style>
+</head>
+<body>
+<!--首先加载<head>标签里面的div样式，若果后面重新定义了其他样式，则以后面为准，如果没有定义，则就是头标签里面的样式-->
+  <div style="background-color:#000;color:#fff">这是一个div区域</div>
+ <div style="color:#fff">这是一个div区域</div>
+ <div >这是一个div区域</div>
+</body>
+</html>
+
+3. 使用@import url(div.css) 导入
+创建一个div.css文件：
+div{background-color:#000;
+     color:#fff
+}
+在<head.>标签中加入：
+<head>
+ <style type="text/css">
+   @import url(div.css);
+</style>
+
+</head>
+
+
+也可以：在CSS文件中创建多个导入：
+例如：在1.css
+@import url(div.css);
+@import url(span.css);
+@import url(p.css);
+然后可以直接在<head>标签中添加：
+<head>
+ <style type="text/css">
+  @import url(1.css);
+ </style>
+ </head>
+这样以后开发的时候就可以只改1.css中的内容，很是方便
+
+4.使用标签 link
+<head>
+  <link rel="stylesheet" href="1.css" type="text/css"/>
+</head>
+
+---------------------------------------------------
+
+ 2..基本选择器
+就是制定css要作用的标签，那个标签的名称就是选择器，意为：选择哪个容器
+
+选择器共有三种：
+1..html标签名选择器，使用的就是html的标签名
+2..class选择器，其使用的标签中的class属性
+3..id选择器，其使用的是标签中的id属性
+
+每一个标签都定义了class属性和id 属性，用于对标签进行标识，方便对标签进行操作，在定义中，多个标签的class属性可以相同，而id值要唯一，因为css、javascript中经常使用
+
+（1）标签名选择器：
+就是: 
+<head>
+<style type="text/css">
+div{
+  	background-color:#fff;
+        color:#000
+ }
+</style>
+</head>
+（2）class选择器
+ 就是：
+<head>
+<style type="text/css">
+div.haha{
+        background-color:#fff;
+        color:#000
+ }
+/*预定样式，实现动态加载：意思是先在现在前面定义一个，之后可能会用*/
+div.hehe{
+        background-color:#f0f;
+        color:#00f
+ }
+/*当有多个相同的class名字时，可以这样同时给不同标签名的相同class操作
+  .haha{
+        background-color:#fff;
+        color:#000
+  }
+*/
+</style>
+
+</head>
+<body>
+ <div class="haha">这是一个div区域</div>
+ <span class="haha">这是一个span区域</span>
+ <p class="haha">这是一个段落</p>
+</body>
+
+（3.）id选择器
+<head>
+<style type="text/css">
+div#qq{
+        background-color:#f0f;
+        color:#ff0
+ }
+
+/*本来是可以有这种的：给所有相同的id 进行操作
+ 但是： 通常ID的取值在页面中是唯一的，因为该属性除了给CSS使用，还可以被js使用。ID通常都是为了去标示页面中的一些特定区域使用的
+#qq{
+        background-color:#f0f;
+        color:#ff0
+ }
+*/
+</style>
+</head>
+<body>
+ <div class="haha",id="qq">这是一个div区域</div>
+ <span class="haha">这是一个span区域</span>
+ <p class="haha">这是一个段落</p>
+</body>
+
+选择器的优先级：
+标签选择器 < class选择器 < id选择器 < style属性（就是直接在style里面写的）
+
+
+3...扩展选择器
+a) 关联选择器：
+  标签是可以嵌套的，要让相同的标签中的不同标签显示不同样式，就可以使用此选择器..............使用 空格 进行关联
+<head>
+<style type="text/css">
+div b{ /*关联选择器：选择器中的选择器*/
+        background-color:#f0f;
+        color:#ff0
+ }
+*/
+</style>
+</head>
+<body>
+ <div class="haha",id="qq">这是<b>一个</b>div区域</div>
+ <span class="haha">这是一个span区域</span>
+ <p class="haha">这是一个段落</p>
+</body>
+
+b) 组合选择器
+   对多个不同选择器进行相同样式设置的时候应用此选择器 ........多个不同选择器使用 逗号 进行组合
+
+<head>
+<style type="text/css">
+.haha,div b{/*组合选择器*/
+        background-color:#f0f;
+        color:#ff0
+ }
+*/
+</style>
+</head>
+<body>
+ <div class="haha",id="qq">这是<b>一个</b>div区域</div>
+ <span class="haha">这是一个span区域</span>
+ <p class="hehe">这是一个段落</p>
+</body>
+
+
+c） 伪元素选择器
+
+其实就是在HTML中预先定义好的一些选择器，称为伪元素，是因为css的术语
+格式： 标签名：伪元素
+
+a:link 超链接未点击状态
+a:visited 超链接被访问后的状态
+a:hover 光标移动到超链接上的状态（鼠标悬停）
+a:active 点击超链接时的状态
+
+顺序是: L V H A
+
+<html>
+<head>
+ <style type="text/css">
+ /*未访问*/
+ a:link{
+      	background-color:#06f;
+  	color:#fff;
+ 	text-decoration:none;/*下划线：无*/
+ 	font-size:18px;/*字体大小*/
+
+ }
+/*访问后*/
+a:visited{
+	background-color:#fff;
+  	color:#f00;
+ 	text-decoration:line-through;/*字体产生横杠*/	
+}
+/*悬停*/
+a:hover{
+	background-color:#000;
+  	color:#fff;
+ 	font-size:36px;/*字体大小*/
+}
+/*点击*/
+a:active{
+      	background-color:#fff;
+  	color:#f00;
+ 	font-size:24px;/*字体大小*/
+
+}
+</style>
+</head>
+<body>
+<a herf="http://www.baidu.com" target="_blank">伪元素选择器演示</a>
+</body>
+</html>
+
+还有：
+
+p:first-line  段落的第一行文本
+P:first-letter  段落的第一个字母
+：focus  具有焦点的元素
+
+<html>
+<head>
+ <style type="text/css">
+  p:first-letter{/*段落首字*/
+	font-size:36px;
+ 	color:#f00
+  }
+ div:hover{ /*可以实现定义div区域的悬停状态*/
+	background-color:#f00;
+	color:#fff
+ }
+ input:focus{ /*对input实现焦点元素定义*/
+	background-color:#09f;
+ }
+</style>
+</head>
+<body>
+   <input type="text"/>
+   <input type="text"/>
+   <p>这是一个段落</p>
+   <div>这是一个div区域</div>
+</body>
+</html>
+
+
+4..css样式的结合应用
+<html>
+<head>
+<style type="text/css">
+ul{
+	list-style-type:none;
+ 	list-style-image:url(1.bmp);/*以图片为标示*/
+ }
+table{
+     	border-bottom:#0c0 double 3px;
+ 	border-left:#f00 solid 3px;
+	border-right:#ff0 dashed 3px;
+	border-top:#0c0 groove 3px;
+	width:500px;
+}
+table td{
+	border:#0cf dotted 1px;
+	padding:20px;
+
+}
+div{
+	border:#f90 dashed 2px;
+	height:200px;
+	width:400px;
+
+}
+input{
+	border:none;
+	border-bottom:#000 1px solid;
+}
+.haha{
+	border:none;
+}
+</style>
+</head>
+<body>
+<ul>
+   <li>无序项目列表</li>
+   <li>无序项目列表</li>
+   <li>无序项目列表</li>
+   <li>无序项目列表</li>
+
+</ul>
+<hr/>
+<table>
+<tr>
+   <td><input type="text" class="haha"/></td>
+   <td><input type="text" class="haha"/></td>
+</tr>
+<tr>
+   <td>单元格一</td>
+   <td>单元格二</td>
+</tr>
+</table>
+<hr/>
+<div>div区域</div>
+<hr/>
+姓名：<input type="text"/>成绩：<input type="text"/>
+
+</body>
+</html>
+
+------------------*************---------------
+5、盒子模型
+边框：border 
+  	上border-top
+	下border-bottom
+	左border-left
+	右border-right
+内边距：padding
+	padding-top
+	...
+外边距： margin
+	margin-top
+	...
+
+<html>
+<head>
+<style type="text/css">
+body{
+	margin:0px;/*使网页与设计的间距为0，开发经常使用*/
+}
+div{
+	border:#09f solid 1px;
+	height:100px;
+	width:200px;
+ }
+#div_1{
+	*/border-bottom:#f60 2px dashed;*/
+	background-color:#f90;
+ 	/*padding:20px 100px 200px 300px;(上右下左)顺时针*/
+}
+#div_2{
+	background-color:#0cf;
+	margin:50px;
+}
+#div_3{
+	background-color:#3f0;
+}
+</style>
+</head>
+<body>
+<div id="div_1">这是第一个盒子11</div>
+<div id="div_2">这是第二个盒子22</div>
+<div id="div_3">这是第三个盒子33</div>
+</body>
+</html>
+
+6..css的布局：漂浮
+
+flot  
+none 默认值，对象不漂浮
+left: 文本流向对象的右边
+right: 文本流向对象的左边
+
+clear: 
+none 默认值，允许两边都可以有浮动对象
+left:不允许左边有浮动对象
+right: 不允许右边有浮动对象
+both:  不允许有浮动对象
+
+#div_2{
+	float:left;/*自己在左边，文本流在右边*/
+	clear:right;/*右边不允许有浮动对象*/
+}
+
+7...css的布局： 定位
+position
+
+static: 默认值，无特殊定位，对象遵循HTML定位规则
+
+absolute: 将对象从文档流中拖出，使用left,right,top,bottom等属性相当于其是最近的一个最优定位设置的父对象进行的定位，如果不存在这样的父对象，则依据body对象，而其层叠通过属性定义（这个就是相当于不在流中了，是浮动的，通过位置定位来确定位置，有父类就依据父类，没有就依据body）
+
+fixed: 未支持
+
+relative: 对象不可层叠，但将依据left,right,top,bottom等属性在正常文档流中偏移位置（就是相当于，移动之后，还是占着这个位置，其他盒子不能占据）
+
+<html>
+<head>
+<style type="text/css">
+body{
+	margin:0px;/*使网页与设计的间距为0，开发经常使用*/
+}
+div{
+	border:#09f solid 1px;
+	height:100px;
+	width:200px;
+ }
+#div_0{
+	background-color:#ccc;
+	height:400px;
+	width:400px;
+	position:absolute;
+	top:100px;
+	left:100px;
+}
+#div_1{
+	*/border-bottom:#f60 2px dashed;*/
+	background-color:#f90;
+ 	/*padding:20px 100px 200px 300px;(上右下左)顺时针*/
+	position:relative;
+	top:20px;
+	left:20px;
+}
+#div_2{
+	background-color:#0cf;
+	margin:50px;
+}
+#div_3{
+	background-color:#3f0;
+}
+</style>
+</head>
+<body>
+<div id="div_0">
+  <div id="div_1">这是第一个盒子11</div>
+  <div id="div_2">这是第二个盒子22</div>
+  <div id="div_3">这是第三个盒子33</div>
+</div>
+</body>
+</html>
+
+
+8..css的布局： 图文混排
+
+<html>
+<head>
+<style type="text/css">
+#imgtext{
+	border: #06f dashed 1px;
+	width:80px;
+}
+#img{
+	float:right;
+}
+#text{
+	color:#f60;
+	font-family:"华文隶书";
+}
+</style>
+</head>
+<body>
+   <div id="imgtext">
+	<div id="img">
+	    <img src="e:\\1.png" />
+	</div>
+	<div id="text">
+         图片说明文字，图片说明文字；
+	 图片说明文字，图片说明文字。
+   	</div>
+   </div>
+
+</body>
+</html>
+9..css的布局：图像签名
+<html>
+<head>
+<style type="text/css">
+#imgtext{
+	border: #06f dashed 1px;
+	width:500px;
+	position:absolute;
+}
+
+#text{
+	color:#f60;
+	font-family:"华文隶书";
+	font-size:24px;
+	
+	position:absolute;
+	top:80px;
+	left:10px;
+}
+</style>
+</head>
+<body>
+<div id="imgtext">
+	<div id="img">
+	    <img src="e:\\1.jpg"  height="300" width="200"/>
+	</div>
+	<div id="text">
+         画中有字。。。定位
+   	</div>
+   </div>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+第一二章：
+
+  开发环境搭建 ：pycharm+python2.7+Django1.9+xadmin+MySQL+Navicat
+ 
+ virtualenvwapper
+ 新建虚拟环境：mkvirtualenv test3 [文件名]
+  workon
+
+第三章：Django 回顾
+
+ settings.py 设置
+ url.py配置
+ models.py设计
+ views.py  编码
+ templates 模板编码
+
+第四章： 数据库设计
+
+ users app model 设计
+ organization app model 设计
+ courses app model 设计
+ operation app model 设计
+
+第五章 ： 后台管理系统开发
+ django admin介绍
+ xadmin安装和model注册  （通过源码安装，下载，放在根目录中）
+ xadmin全局配置  (主题，导航栏， 页头页脚设计）
+
+第六章 ： 登录、注册、找回密码
+
+ 登录（session和cookie机制）：
+     重写了用户登录验证模块，通过多个字段登录和查询
+ 注册（form表单提交、图片验证码，发送邮件）：
+     使用 django-simple-captcha 第三方库，实现图片验证码功能
+      使用django自带的 send_mail 发送邮件
+ 找回密码（邮件发送）
+     可以修改自己的密码
+
+第七章：课程机构功能实现
+ 
+ 机构列表（分页，筛选， 排序）
+	使用 django-pure-pagination 第三方库，实现分页
+
+ 机构详情页（收藏，富文本）
+	收藏是使用ajax方式完成 HttpResponse
+ 咨询提交（modelform验证和保存）
+
+第八章： 课程功能实现
+
+ 课程列表（分页、排序）
+ 课程详情页（收藏、章节展示、资源展示、评论）
+
+第九章： 讲师功能实现
+
+ 讲师列表（分页、排序）
+ 讲师详情页（收藏）
+
+第十章： 个人中心功能实现
+
+ 用户信息修改（修改密码、头像、邮箱、基本信息）
+ 全局功能实现（课程、课程机构、讲师）
+ 我的课程
+ 我的收藏（删除收藏）
+ 我的消息
+
+第十一章： 全局细节功能实现
+ 
+ 全局404和500页面的配置
+ 首页开发
+ 点击数和收藏数修改和退出功能
+
+第十二章： 常见的web攻击
+  
+  sql注入攻击
+  xss攻击
+  csrf攻击
+
+第十三章：xadmin进阶开发
+  
+  userprofile注册和设置
+  xadmin常见功能设置（以courses/adminx的CourseAdmin举例）
+  inlinemodel注册（实现model的嵌套）
+  proxy代理注册（使用两个管理器管理一个model）
+  django ueditor富文本编辑器生成
+  excel导入插件集成
